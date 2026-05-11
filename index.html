@@ -292,6 +292,67 @@
   }
   .menu-card.expanded .qty-max-note { display: block; }
 
+  .mini-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 260;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(26,8,0,0.42);
+    backdrop-filter: blur(5px);
+  }
+  .mini-popup.visible { display: flex; }
+  .mini-popup-card {
+    width: 100%;
+    max-width: 360px;
+    background: var(--offwhite);
+    border: 2px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 16px 40px rgba(26,8,0,0.28);
+    animation: modalIn 0.25s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .mini-popup-title {
+    font-family: 'Talina', 'Fraunces', serif;
+    color: var(--orange);
+    font-size: 1.15rem;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+  .mini-popup-text {
+    color: var(--mid);
+    font-size: 0.9rem;
+    font-weight: 650;
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+  .mini-popup-actions { display: grid; gap: 10px; }
+  .mini-popup-primary, .mini-popup-secondary {
+    width: 100%;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'Karla', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mini-popup-primary {
+    border: 2px solid var(--orange);
+    background: var(--orange);
+    color: white;
+  }
+  .mini-popup-secondary {
+    border: 2px solid var(--border);
+    background: white;
+    color: var(--mid);
+  }
+  .mini-popup-primary:hover, .mini-popup-secondary:hover { transform: translateY(-2px); }
+
   #addressGroup { display:none; margin-top:12px; }
   #addressGroup.visible { display:block; }
 
@@ -636,6 +697,18 @@
 
 </div>
 
+<!-- Mini wholesale prompt -->
+<div class="mini-popup" id="wholesalePrompt">
+  <div class="mini-popup-card">
+    <div class="mini-popup-title" id="wholesalePromptTitle">Pedido al mayor</div>
+    <div class="mini-popup-text" id="wholesalePromptText">Más de 8 docenas supera los 100 tequeños y se maneja como pedido al mayor.</div>
+    <div class="mini-popup-actions">
+      <button type="button" class="mini-popup-primary" id="wholesalePromptBtn" onclick="openWholesaleFromPrompt()">Abrir pedido al mayor</button>
+      <button type="button" class="mini-popup-secondary" id="wholesalePromptClose" onclick="closeWholesalePrompt()">Seguir con mi pedido</button>
+    </div>
+  </div>
+</div>
+
 <!-- Wholesale Modal -->
 <div class="modal-overlay" id="wholesaleModal">
   <div class="modal">
@@ -702,6 +775,10 @@
       alertCustomQty:'Por favor indica cuántas docenas necesitas.',
       alertMaxQty:'Puedes pedir hasta 8 docenas por este formulario. Para más de 100 tequeños, usa Pedido al mayor / Eventos.',
       qtyMaxNote:'Hasta 8 docenas por pedido. Para más de 100 tequeños, usa Pedido al mayor / Eventos.',
+      wholesalePromptTitle:'Pedido al mayor',
+      wholesalePromptText:'Más de 8 docenas supera los 100 tequeños y se maneja como pedido al mayor.',
+      wholesalePromptBtn:'Abrir pedido al mayor',
+      wholesalePromptClose:'Seguir con mi pedido',
       noticeMenu:'Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.',
       sectionDelivery:'Entrega', deliveryName:'Delivery', deliveryDesc:'Te lo llevamos a domicilio',
       pickupName:'Pickup', pickupDesc:'Recógelo en punto acordado',
@@ -743,6 +820,10 @@
       alertCustomQty:'Veuillez indiquer le nombre de douzaines souhaité.',
       alertMaxQty:'Vous pouvez commander jusqu’à 8 douzaines avec ce formulaire. Pour plus de 100 tequeños, utilise Commande en gros / Événements.',
       qtyMaxNote:'Jusqu’à 8 douzaines par commande. Pour plus de 100 tequeños, utilise Commande en gros / Événements.',
+      wholesalePromptTitle:'Commande en gros',
+      wholesalePromptText:'Plus de 8 douzaines dépasse 100 tequeños et se traite comme une commande en gros.',
+      wholesalePromptBtn:'Ouvrir commande en gros',
+      wholesalePromptClose:'Continuer ma commande',
       noticeMenu:'Sauces tartares incluses. Livrés réfrigérés, prêts à frire ou air fryer.',
       sectionDelivery:'Livraison', deliveryName:'Livraison', deliveryDesc:'On vous livre à domicile',
       pickupName:'Ramassage', pickupDesc:'Ramassez au point convenu',
@@ -838,6 +919,10 @@
     document.getElementById('menuQtyTitle').textContent = t.menuQtyTitle;
     updateMenuSummary();
     document.getElementById('qtyMaxNote').textContent = t.qtyMaxNote;
+    document.getElementById('wholesalePromptTitle').textContent = t.wholesalePromptTitle;
+    document.getElementById('wholesalePromptText').textContent = t.wholesalePromptText;
+    document.getElementById('wholesalePromptBtn').textContent = t.wholesalePromptBtn;
+    document.getElementById('wholesalePromptClose').textContent = t.wholesalePromptClose;
     document.getElementById('noticeMenu').textContent = t.noticeMenu;
     document.getElementById('sectionDelivery').textContent = t.sectionDelivery;
     document.getElementById('deliveryName').textContent = t.deliveryName;
@@ -906,12 +991,40 @@
   function changeQty(delta, event) {
     if (event) event.stopPropagation();
     const input = document.getElementById('customQty');
-    input.value = Math.min(8, Math.max(1, (parseInt(input.value, 10) || 1) + delta));
+    const nextQty = (parseInt(input.value, 10) || 1) + delta;
+    if (nextQty > 8) {
+      input.value = 8;
+      updateMenuSummary();
+      showWholesalePrompt();
+      return;
+    }
+    input.value = Math.max(1, nextQty);
     updateMenuSummary();
   }
 
   function updateQtyFromInput() {
+    const input = document.getElementById('customQty');
+    const requestedQty = parseInt(input.value, 10);
+    if (requestedQty > 8) {
+      input.value = 8;
+      updateMenuSummary();
+      showWholesalePrompt();
+      return;
+    }
     updateMenuSummary();
+  }
+
+  function showWholesalePrompt() {
+    document.getElementById('wholesalePrompt').classList.add('visible');
+  }
+
+  function closeWholesalePrompt() {
+    document.getElementById('wholesalePrompt').classList.remove('visible');
+  }
+
+  function openWholesaleFromPrompt() {
+    closeWholesalePrompt();
+    openWholesale();
   }
 
   function selectDelivery(el, type) {
@@ -969,7 +1082,7 @@
     if (!menuSelected) { alert(t.alertMenu); return; }
     const customQty = parseInt(document.getElementById('customQty').value, 10);
     if (!customQty || customQty < 1) { showFieldError('customQty', t.alertCustomQty); return; }
-    if (customQty > 8) { showFieldError('customQty', t.alertMaxQty); return; }
+    if (customQty > 8) { showWholesalePrompt(); return; }
     if (!deliverySelected) { alert(t.alertDelivery); return; }
     if (deliveryType === 'delivery' && !address) { showFieldError('address', t.alertAddress); return; }
     if (!deliveryDate) { showFieldError('deliveryDate', t.alertDate); return; }
