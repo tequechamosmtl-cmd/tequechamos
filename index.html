@@ -1,0 +1,1179 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TequeChamos — Pedidos</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('474kEvdnpp4xNmagP');</script>
+<style>
+  @font-face {
+    font-family: 'Talina';
+    src: url('./fonts/Talina-Regular.otf') format('opentype');
+    font-weight: 400 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --orange: #FF4D00;
+    --yellow: #FFD200;
+    --dark: #1A0800;
+    --white: #FFFFFF;
+    --offwhite: #FFF8EE;
+    --mid: #7A3A00;
+    --border: #FFB347;
+    --card-bg: rgba(255,255,255,0.92);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Karla', sans-serif;
+    background: var(--dark);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated blobs */
+  .blob {
+    position: fixed; border-radius: 50%;
+    filter: blur(90px); opacity: 0.9;
+    z-index: 0; will-change: transform;
+  }
+  .blob-1 { width:700px; height:700px; background:#FF4D00; top:-200px; left:-200px; animation:move1 18s ease-in-out infinite; }
+  .blob-2 { width:600px; height:600px; background:#FFD200; top:-100px; right:-150px; animation:move2 15s ease-in-out infinite; }
+  .blob-3 { width:500px; height:500px; background:#FF7A00; bottom:-150px; left:-100px; animation:move3 20s ease-in-out infinite; }
+  .blob-4 { width:550px; height:550px; background:#FF2D00; bottom:-100px; right:-150px; animation:move4 16s ease-in-out infinite; }
+  .blob-5 { width:450px; height:450px; background:#FFA800; top:35%; left:25%; animation:move5 22s ease-in-out infinite; }
+  .blob-6 { width:400px; height:400px; background:#FF6600; top:15%; right:5%; animation:move6 17s ease-in-out infinite; }
+
+  @keyframes move1{0%{transform:translate(0,0) scale(1)}25%{transform:translate(100px,80px) scale(1.1)}50%{transform:translate(50px,160px) scale(0.95)}75%{transform:translate(-50px,90px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes move2{0%{transform:translate(0,0) scale(1)}30%{transform:translate(-90px,110px) scale(1.05)}60%{transform:translate(-160px,50px) scale(0.9)}80%{transform:translate(-70px,180px) scale(1.1)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes move3{0%{transform:translate(0,0) scale(1)}20%{transform:translate(90px,-110px) scale(1.08)}50%{transform:translate(180px,-70px) scale(0.95)}75%{transform:translate(70px,-180px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes move4{0%{transform:translate(0,0) scale(1)}25%{transform:translate(-110px,-90px) scale(1.1)}55%{transform:translate(-50px,-180px) scale(0.92)}80%{transform:translate(-140px,-70px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes move5{0%{transform:translate(0,0) scale(1)}33%{transform:translate(-90px,-130px) scale(1.15)}66%{transform:translate(110px,-70px) scale(0.88)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes move6{0%{transform:translate(0,0) scale(1)}40%{transform:translate(-70px,130px) scale(1.1)}70%{transform:translate(50px,180px) scale(0.95)}100%{transform:translate(0,0) scale(1)}}
+
+  /* Grain */
+  body::after {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:1; opacity:0.5;
+  }
+
+  /* Layout */
+  .page {
+    position: relative; z-index: 2;
+    max-width: 600px; margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  /* Hero header */
+  .hero {
+    background: var(--orange);
+    padding: 40px 32px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 0; right: 0;
+    height: 60px;
+    background: var(--offwhite);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    z-index: 1;
+  }
+
+  .hero-inner { position: relative; z-index: 2; }
+
+  .hero-top {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 24px;
+  }
+
+  .logo {
+    font-family: 'Talina', 'Fraunces', serif;
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    font-weight: 900;
+    color: var(--yellow);
+    letter-spacing: 3px;
+    line-height: 1;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+  }
+
+  .lang-toggle {
+    display: flex;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .lang-btn {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.72rem; font-weight: 700;
+    padding: 6px 14px; border: none; cursor: pointer;
+    background: transparent; color: rgba(255,255,255,0.7);
+    letter-spacing: 1px; text-transform: uppercase;
+    border-radius: 50px; transition: all 0.2s;
+  }
+  .lang-btn.active { background: var(--yellow); color: var(--dark); }
+  .lang-btn:not(.active):hover { color: white; }
+
+  .hero-tagline {
+    font-size: 0.9rem; font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.5px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--dark);
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 50px;
+    margin-bottom: 12px;
+  }
+
+  /* Content area */
+  .content {
+    background: var(--offwhite);
+    padding: 48px 28px 80px;
+  }
+
+  /* Section */
+  .section { margin-bottom: 40px; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .section-num {
+    width: 28px; height: 28px;
+    background: var(--orange);
+    color: white;
+    font-family: 'Talina', 'Fraunces', serif;
+    font-size: 0.85rem; font-weight: 700;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Talina', 'Fraunces', serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--dark); letter-spacing: 0.3px;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--orange), var(--yellow), transparent);
+    margin: 36px 0; opacity: 0.4;
+  }
+
+  /* Form fields */
+  .form-group { margin-bottom: 14px; }
+
+  label {
+    display: block; font-size: 0.82rem;
+    font-weight: 700; color: var(--mid);
+    margin-bottom: 6px; letter-spacing: 0.3px;
+    text-transform: uppercase; font-size: 0.72rem;
+  }
+
+  input, select, textarea {
+    width: 100%; padding: 13px 16px;
+    background: white;
+    border: 2px solid #EEE;
+    border-radius: 10px;
+    font-family: 'Karla', sans-serif;
+    font-size: 0.97rem; font-weight: 600;
+    color: var(--dark); transition: all 0.2s;
+    outline: none; appearance: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,77,0,0.12);
+  }
+  input.field-invalid, select.field-invalid, textarea.field-invalid {
+    border-color: #D72600;
+    box-shadow: 0 0 0 3px rgba(215,38,0,0.14);
+  }
+  input::placeholder, textarea::placeholder { color: #CCC; font-weight: 500; }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* Menu cards */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .menu-card, .delivery-card {
+    border: 2px solid #EEE;
+    border-radius: 14px; padding: 18px 16px;
+    cursor: pointer; transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+    background: white; position: relative;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .menu-card input[type="radio"],
+  .delivery-card input[type="radio"] { position:absolute; opacity:0; width:0; height:0; }
+
+  .menu-card:hover, .delivery-card:hover {
+    border-color: var(--orange);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(255,77,0,0.15);
+  }
+  .menu-card.selected, .delivery-card.selected {
+    border-color: var(--orange);
+    background: linear-gradient(135deg, #FFF8EE, #FFF0D0);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(255,77,0,0.2);
+  }
+  .menu-card.selected::after, .delivery-card.selected::after {
+    content: '';
+    position: absolute; top: 12px; right: 12px;
+    width: 10px; height: 10px;
+    background: var(--orange); border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(255,77,0,0.2);
+  }
+
+  .menu-qty, .delivery-name {
+    font-family: 'Talina', 'Fraunces', serif;
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--dark); margin-bottom: 4px;
+  }
+  .menu-price {
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--orange);
+  }
+  .menu-note, .delivery-desc {
+    font-size: 0.78rem; color: #999;
+    margin-top: 6px; font-weight: 600;
+  }
+
+  #addressGroup { display:none; margin-top:12px; }
+  #addressGroup.visible { display:block; }
+  #customQtyGroup { display:none; margin-top:12px; }
+
+  /* Calc button */
+  .calc-btn {
+    width: 100%; padding: 11px; margin-top: 8px;
+    background: white; border: 2px solid var(--border);
+    border-radius: 10px; font-family: 'Karla', sans-serif;
+    font-size: 0.82rem; font-weight: 700; color: var(--mid);
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .calc-btn:hover { border-color: var(--orange); color: var(--orange); background: #FFF8EE; }
+
+  /* Notice */
+  .notice {
+    margin-top: 12px; padding: 13px 16px;
+    background: #FFF8EE;
+    border-left: 3px solid var(--orange);
+    font-size: 0.84rem; color: var(--mid);
+    font-weight: 600; line-height: 1.5;
+    border-radius: 0 10px 10px 0;
+  }
+
+  /* Buttons */
+  .submit-btn {
+    width: 100%; padding: 18px;
+    background: var(--orange);
+    color: white; font-family: 'Karla', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    border: none; border-radius: 14px; cursor: pointer;
+    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 6px 20px rgba(255,77,0,0.35);
+    position: relative; overflow: hidden;
+  }
+  .submit-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,210,0,0.3), transparent);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .submit-btn:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(255,77,0,0.45); }
+  .submit-btn:hover::after { opacity: 1; }
+  .submit-btn:active { transform:translateY(1px); box-shadow:0 3px 10px rgba(255,77,0,0.3); }
+  .submit-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+  .wholesale-btn {
+    width: 100%; padding: 16px; margin-top: 12px;
+    background: transparent; color: var(--orange);
+    font-family: 'Karla', sans-serif; font-size: 0.85rem;
+    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    border: 2px solid var(--orange); border-radius: 14px;
+    cursor: pointer; transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .wholesale-btn:hover { background: var(--orange); color: white; transform:translateY(-2px); box-shadow:0 8px 20px rgba(255,77,0,0.3); }
+
+  /* Success */
+  .success { display:none; text-align:center; padding:60px 20px; }
+  .success.visible { display:block; }
+
+  .success-icon {
+    width: 70px; height: 70px;
+    background: linear-gradient(135deg, var(--orange), var(--yellow));
+    border-radius: 50%; margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 8px 24px rgba(255,77,0,0.3);
+  }
+
+  .success-title {
+    font-family: 'Talina', 'Fraunces', serif;
+    font-size: 1.8rem; font-weight: 900;
+    color: var(--orange); margin-bottom: 12px;
+  }
+  .success-text {
+    font-size: 0.92rem; color: var(--mid);
+    font-weight: 600; line-height: 1.7;
+    max-width: 340px; margin: 0 auto 12px;
+  }
+  .payment-box {
+    background: white; border: 2px solid var(--border);
+    border-radius: 14px; padding: 20px 24px;
+    margin: 20px auto; max-width: 380px; text-align: left;
+  }
+  .payment-box-title {
+    font-family: 'Talina', 'Fraunces', serif;
+    font-size: 0.95rem; font-weight: 700;
+    color: var(--dark); margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    font-size: 0.8rem;
+  }
+  .payment-box p {
+    font-size: 0.88rem; font-weight: 600;
+    color: var(--mid); line-height: 1.6;
+  }
+  .payment-box strong { color: var(--orange); }
+
+  .new-order-btn {
+    font-family:'Karla',sans-serif; font-size:0.78rem; font-weight:700;
+    letter-spacing:2px; text-transform:uppercase; padding:12px 28px;
+    border:2px solid var(--orange); border-radius:50px;
+    background:transparent; color:var(--orange); cursor:pointer;
+    transition:all 0.2s; margin-top: 20px;
+  }
+  .new-order-btn:hover { background:var(--orange); color:white; }
+
+  /* Modal */
+  .modal-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(26,8,0,0.7);
+    backdrop-filter:blur(8px); z-index:300;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.visible { display:flex; }
+  .modal {
+    background:var(--offwhite); border-radius:24px;
+    width:100%; max-width:480px;
+    max-height:90vh; overflow-y:auto;
+    animation:modalIn 0.3s cubic-bezier(.34,1.56,.64,1) both;
+    position:relative; overflow:hidden;
+  }
+  @keyframes modalIn{from{opacity:0;transform:scale(0.9) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+  .modal-hero {
+    background: var(--orange);
+    padding: 28px 28px 20px;
+    position: relative;
+  }
+  .modal-hero::after {
+    content:''; position:absolute;
+    bottom:-20px; left:0; right:0; height:40px;
+    background:var(--offwhite);
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+  }
+  .modal-close {
+    position:absolute; top:16px; right:16px;
+    background:rgba(0,0,0,0.2); border:none; border-radius:50%;
+    width:32px; height:32px; font-size:0.9rem; cursor:pointer;
+    color:white; transition:all 0.2s;
+    display:flex; align-items:center; justify-content:center; font-weight:700;
+    z-index: 2;
+  }
+  .modal-close:hover { background:rgba(0,0,0,0.4); transform:scale(1.1); }
+  .modal-title {
+    font-family:'Talina','Fraunces',serif; font-size:1.5rem; font-weight:900;
+    color:var(--yellow); letter-spacing:1px; position:relative; z-index:1;
+  }
+  .modal-subtitle {
+    font-size:0.85rem; color:rgba(255,255,255,0.8);
+    font-weight:600; margin-top:6px; position:relative; z-index:1;
+  }
+  .modal-body { padding:32px 28px 28px; overflow-y:auto; max-height:60vh; }
+
+  /* Footer */
+  .footer {
+    background: var(--dark); padding: 24px 28px;
+    text-align: center;
+  }
+  .footer p { font-size:0.78rem; color:rgba(255,255,255,0.4); letter-spacing:0.5px; }
+  .footer a { color:var(--yellow); text-decoration:none; font-weight:700; }
+  .footer a:hover { color:var(--orange); }
+  .footer-bulk { margin-top:6px; color:rgba(255,255,255,0.3); font-size:0.72rem; }
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .section { animation:fadeUp 0.6s ease both; }
+  .section:nth-child(1){animation-delay:0.05s}
+  .section:nth-child(2){animation-delay:0.1s}
+  .section:nth-child(3){animation-delay:0.15s}
+  .section:nth-child(4){animation-delay:0.2s}
+  .section:nth-child(5){animation-delay:0.25s}
+
+  @media(max-width:480px){
+    .menu-grid,.delivery-grid{grid-template-columns:1fr;}
+    .content{padding:40px 20px 60px;}
+    .hero{padding:30px 20px 44px;}
+    .modal-body{padding:24px 20px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="blob blob-4"></div>
+<div class="blob blob-5"></div>
+<div class="blob blob-6"></div>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-top">
+        <div class="logo">TequeChamos</div>
+        <div class="lang-toggle">
+          <button class="lang-btn active" onclick="setLang('es')">ES</button>
+          <button class="lang-btn" onclick="setLang('fr')">FR</button>
+        </div>
+      </div>
+      <div class="hero-badge" id="heroBadge">Desde Maracaibo</div>
+      <div class="hero-tagline" id="heroTagline">Los mejores tequeños de Montreal — frescos, artesanales y listos para freír.</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <div id="formSection">
+
+      <!-- 1. Datos -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">1</div>
+          <div class="section-title" id="sectionPersonal">Tus datos</div>
+        </div>
+        <div class="form-group">
+          <label id="labelName">Nombre completo</label>
+          <input type="text" id="name" placeholder="Tu nombre completo" autocomplete="name" minlength="2" required>
+        </div>
+        <div class="form-group">
+          <label id="labelPhone">Teléfono</label>
+          <input type="tel" id="phone" placeholder="+1 514 000 0000" autocomplete="tel" inputmode="tel" required>
+        </div>
+        <div class="form-group">
+          <label id="labelEmail">Correo electrónico</label>
+          <input type="email" id="email" placeholder="tucorreo@email.com" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 2. Pedido -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">2</div>
+          <div class="section-title" id="sectionMenu">Tu pedido</div>
+        </div>
+        <div class="menu-grid">
+          <label class="menu-card" onclick="selectMenu(this)">
+            <input type="radio" name="menu" value="1 docena — $20">
+            <div class="menu-qty" id="menu1qty">1 Docena</div>
+            <div class="menu-price">$20</div>
+            <div class="menu-note" id="menu1note">12 tequeños + 2 salsas</div>
+          </label>
+          <label class="menu-card" onclick="selectMenu(this)">
+            <input type="radio" name="menu" value="2 docenas — $35">
+            <div class="menu-qty" id="menu2qty">2 Docenas</div>
+            <div class="menu-price">$35</div>
+            <div class="menu-note" id="menu2note">24 tequeños + 4 salsas</div>
+          </label>
+          <label class="menu-card" onclick="selectMenu(this); showCustomQty()">
+            <input type="radio" name="menu" value="mas-docenas">
+            <div class="menu-qty" id="menu3qty">+ Docenas</div>
+            <div class="menu-price" style="font-size:1rem; margin-top:4px;" id="menu3price">A convenir</div>
+            <div class="menu-note" id="menu3note">Pedido personalizado</div>
+          </label>
+        </div>
+        <div id="customQtyGroup">
+          <div class="form-group" style="margin-top:14px;">
+            <label id="labelCustomQty">¿Cuántas docenas necesitas?</label>
+            <input type="number" id="customQty" min="3" step="1" placeholder="Ej: 5">
+          </div>
+        </div>
+        <div class="notice" id="noticeMenu">Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 3. Entrega -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">3</div>
+          <div class="section-title" id="sectionDelivery">Entrega</div>
+        </div>
+        <div class="delivery-grid">
+          <label class="delivery-card" onclick="selectDelivery(this, 'delivery')">
+            <input type="radio" name="delivery" value="Delivery">
+            <div class="delivery-name" id="deliveryName">Delivery</div>
+            <div class="delivery-desc" id="deliveryDesc">Te lo llevamos a domicilio</div>
+          </label>
+          <label class="delivery-card" onclick="selectDelivery(this, 'pickup')">
+            <input type="radio" name="delivery" value="Pickup">
+            <div class="delivery-name" id="pickupName">Pickup</div>
+            <div class="delivery-desc" id="pickupDesc">Recógelo en punto acordado</div>
+          </label>
+        </div>
+        <div id="addressGroup">
+          <div class="form-group" style="margin-top:14px;">
+            <label id="labelAddress">Tu dirección</label>
+            <input type="text" id="address" placeholder="Calle, ciudad, código postal" autocomplete="street-address" oninput="clearDeliveryEstimate()">
+            <button type="button" class="calc-btn" onclick="calcDelivery()" id="calcBtn">Calcular costo de delivery</button>
+          </div>
+          <div id="deliveryEstimate" style="display:none;" class="notice"></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 4. Fecha -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">4</div>
+          <div class="section-title" id="sectionDate">Día de entrega</div>
+        </div>
+        <div class="form-group">
+          <label id="labelDate">Cuándo prefieres recibir tu pedido</label>
+          <select id="deliveryDate" required>
+            <option value="" id="optDefault">Selecciona una fecha</option>
+          </select>
+        </div>
+        <div class="notice" id="noticeDays">Elige entre los próximos viernes y sábados disponibles.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 5. Notas -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">5</div>
+          <div class="section-title" id="sectionNotes">Notas</div>
+        </div>
+        <div class="form-group">
+          <label id="labelNotes">Nota adicional (opcional)</label>
+          <textarea id="notes" placeholder="Alergias, instrucciones especiales..."></textarea>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="submitOrder()" id="submitBtn">Hacer pedido</button>
+      <button class="wholesale-btn" onclick="openWholesale()" id="wholesaleBtn">Pedido al mayor / Eventos</button>
+
+    </div>
+
+    <!-- Success -->
+    <div class="success" id="successSection">
+      <div class="success-icon">✓</div>
+      <div class="success-title" id="successTitle">Pedido recibido</div>
+      <p class="success-text" id="successText">Gracias por tu pedido. Te enviamos un correo con todos los detalles.</p>
+      <div class="payment-box">
+        <div class="payment-box-title" id="paymentTitle">Instrucciones de pago</div>
+        <p id="paymentInstructions">Para confirmar tu pedido, realiza el pago por <strong>Interac e-transfer</strong> a:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Una vez confirmado el pago, tu pedido queda reservado.</p>
+      </div>
+      <p style="font-size:0.8rem; color:#BBB; font-weight:600;" id="successNote">Tu pedido se confirma una vez recibamos el pago.</p>
+      <br>
+      <button class="new-order-btn" onclick="resetForm()" id="newOrderBtn">Hacer otro pedido</button>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>TequeChamos — Montreal &nbsp;|&nbsp; <a href="https://instagram.com/tequechamosmtl">@tequechamosmtl</a></p>
+    <p class="footer-bulk" id="footerBulk">Eventos y pedidos al mayor — escríbenos por Instagram</p>
+  </div>
+
+</div>
+
+<!-- Wholesale Modal -->
+<div class="modal-overlay" id="wholesaleModal">
+  <div class="modal">
+    <div class="modal-hero">
+      <button class="modal-close" onclick="closeWholesale()">×</button>
+      <div class="modal-title" id="wTitle">Al Mayor / Eventos</div>
+      <div class="modal-subtitle" id="wSubtitle">Cuéntanos los detalles y te contactamos para coordinar todo.</div>
+    </div>
+    <div class="modal-body">
+
+      <div id="wFormSection">
+        <div class="form-group">
+          <label id="wLabelName">Nombre completo</label>
+          <input type="text" id="wName" placeholder="Tu nombre completo" autocomplete="name" minlength="2" required>
+        </div>
+        <div class="form-group">
+          <label id="wLabelPhone">Teléfono / WhatsApp</label>
+          <input type="tel" id="wPhone" placeholder="+1 514 000 0000" autocomplete="tel" inputmode="tel" required>
+        </div>
+        <div class="form-group">
+          <label id="wLabelEmail">Correo electrónico</label>
+          <input type="email" id="wEmail" placeholder="tucorreo@email.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label id="wLabelType">Tipo de pedido</label>
+          <select id="wType" required>
+            <option value="" id="wOptDefault">Selecciona una opción</option>
+            <option value="Pedido al mayor">Pedido al mayor</option>
+            <option value="Evento">Evento</option>
+            <option value="Corporativo / Oficina">Corporativo / Oficina</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label id="wLabelDetails">Detalles del pedido</label>
+          <textarea id="wDetails" style="min-height:110px;" placeholder="Cantidad aproximada, fecha del evento, lugar de entrega..." required></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitWholesale()" id="wSubmitBtn" style="margin-top:8px;">Enviar solicitud</button>
+      </div>
+
+      <div class="success" id="wSuccess">
+        <div class="success-icon">✓</div>
+        <div class="success-title" style="font-size:1.4rem;" id="wSuccessTitle">Solicitud enviada</div>
+        <p class="success-text" style="font-size:0.85rem;" id="wSuccessText">Recibimos tu solicitud. Te contactaremos pronto para coordinar todos los detalles.</p>
+        <button class="new-order-btn" onclick="closeWholesale()" style="margin-top:12px;" id="wCloseBtn">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentLang = 'es';
+  let deliveryType = '';
+  const DELIVERY_ORIGIN_ADDRESS = '7502 Rue Terbois, Montréal, Québec, Canada';
+  let deliveryOriginCoords = null;
+
+  const texts = {
+    es: {
+      heroBadge: 'Desde Maracaibo',
+      heroTagline: 'Los mejores tequeños de Montreal — frescos, artesanales y listos para freír.',
+      sectionPersonal:'Tus datos', labelName:'Nombre completo', namePH:'Tu nombre completo',
+      labelPhone:'Teléfono', labelEmail:'Correo electrónico',
+      sectionMenu:'Tu pedido', menu1qty:'1 Docena', menu1note:'12 tequeños + 2 salsas',
+      menu2qty:'2 Docenas', menu2note:'24 tequeños + 4 salsas',
+      menu3qty:'+ Docenas', menu3note:'Pedido personalizado',
+      labelCustomQty:'¿Cuántas docenas necesitas?',
+      noticeMenu:'Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.',
+      sectionDelivery:'Entrega', deliveryName:'Delivery', deliveryDesc:'Te lo llevamos a domicilio',
+      pickupName:'Pickup', pickupDesc:'Recógelo en punto acordado',
+      labelAddress:'Tu dirección', addressPH:'Calle, ciudad, código postal',
+      calcBtn:'Calcular costo de delivery',
+      sectionDate:'Día de entrega', labelDate:'Cuándo prefieres recibir tu pedido',
+      optDefault:'Selecciona una fecha',
+      noticeDays:'Elige entre los próximos viernes y sábados disponibles.',
+      sectionNotes:'Notas', labelNotes:'Nota adicional (opcional)', notesPH:'Alergias, instrucciones especiales...',
+      submitBtn:'Hacer pedido', wholesaleBtn:'Pedido al mayor / Eventos',
+      successTitle:'Pedido recibido', successText:'Gracias por tu pedido. Te enviamos un correo con todos los detalles.',
+      paymentTitle:'Instrucciones de pago',
+      paymentInstructions:'Para confirmar tu pedido, realiza el pago por <strong>Interac e-transfer</strong> a:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Una vez confirmado el pago, tu pedido queda reservado.',
+      successNote:'Tu pedido se confirma una vez recibamos el pago.',
+      newOrderBtn:'Hacer otro pedido', footerBulk:'Eventos y pedidos al mayor — escríbenos por Instagram',
+      wTitle:'Al Mayor / Eventos', wSubtitle:'Cuéntanos los detalles y te contactamos para coordinar todo.',
+      wLabelName:'Nombre completo', wLabelPhone:'Teléfono / WhatsApp', wLabelEmail:'Correo electrónico',
+      wLabelType:'Tipo de pedido', wOptDefault:'Selecciona una opción',
+      wLabelDetails:'Detalles del pedido', wDetailsPH:'Cantidad aproximada, fecha del evento, lugar de entrega...',
+      wSubmitBtn:'Enviar solicitud', wSuccessTitle:'Solicitud enviada',
+      wSuccessText:'Recibimos tu solicitud. Te contactaremos pronto para coordinar todos los detalles.',
+      wCloseBtn:'Cerrar',
+      alertName:'Por favor ingresa tu nombre.', alertInvalidName:'Por favor ingresa un nombre válido, sin números.', alertPhone:'Por favor ingresa tu teléfono.', alertInvalidPhone:'Por favor ingresa un número de teléfono válido.',
+      alertEmail:'Por favor ingresa un correo válido.', alertMenu:'Por favor selecciona una opción del menú.', alertCustomQty:'Por favor indica cuántas docenas necesitas.',
+      alertDelivery:'Por favor selecciona delivery o pickup.', alertAddress:'Por favor ingresa tu dirección.',
+      alertDate:'Por favor selecciona un día de entrega.', sending:'Enviando...',
+      alertWName:'Por favor ingresa tu nombre.', alertInvalidWName:'Por favor ingresa un nombre válido, sin números.', alertWPhone:'Por favor ingresa tu teléfono.', alertInvalidWPhone:'Por favor ingresa un número de teléfono válido.',
+      alertWEmail:'Por favor ingresa un correo válido.', alertWType:'Por favor selecciona el tipo de pedido.',
+      alertWDetails:'Por favor describe los detalles de tu pedido.',
+      deliveryZone0:'Zona cercana (0-5 km)', deliveryZone1:'Zona media (5-10 km)',
+      deliveryZone2:'Zona media (10-15 km)', deliveryZone3:'Zona lejana (15-20 km)',
+      deliveryZone4:'Zona lejana (20-25 km)', deliveryZone5:'Zona muy lejana (+25 km) — a coordinar',
+      deliveryEstLabel:'Distancia estimada', deliveryEstCost:'Costo de delivery estimado', deliveryMatchedLabel:'Dirección encontrada',
+      deliveryEstNote:'Este es un estimado. El precio final se confirma al momento del pedido.',
+      deliveryNotFound:'No pudimos encontrar esa dirección. Verifica que sea correcta.',
+      deliveryError:'Hubo un error al calcular. Intenta de nuevo.',
+      calcBtn:'Calcular costo de delivery', calculating:'Calculando...',
+    },
+    fr: {
+      heroBadge: 'De Maracaibo',
+      heroTagline: 'Les meilleurs tequeños de Montreal — frais, artisanaux et prêts à frire.',
+      sectionPersonal:'Tes infos', labelName:'Nom complet', namePH:'Ton nom complet',
+      labelPhone:'Téléphone', labelEmail:'Adresse courriel',
+      sectionMenu:'Ta commande', menu1qty:'1 Douzaine', menu1note:'12 tequeños + 2 sauces',
+      menu2qty:'2 Douzaines', menu2note:'24 tequeños + 4 sauces',
+      menu3qty:'+ Douzaines', menu3note:'Commande personnalisée',
+      labelCustomQty:'Combien de douzaines avez-vous besoin?',
+      noticeMenu:'Sauces tartares incluses. Livrés réfrigérés, prêts à frire ou air fryer.',
+      sectionDelivery:'Livraison', deliveryName:'Livraison', deliveryDesc:'On vous livre à domicile',
+      pickupName:'Ramassage', pickupDesc:'Ramassez au point convenu',
+      labelAddress:'Ton adresse', addressPH:'Rue, ville, code postal',
+      calcBtn:'Calculer le coût de livraison',
+      sectionDate:'Jour de livraison', labelDate:'Quand veux-tu recevoir ta commande',
+      optDefault:'Choisis une date',
+      noticeDays:'Choisis parmi les prochains vendredis et samedis disponibles.',
+      sectionNotes:'Notes', labelNotes:'Note supplémentaire (optionnelle)', notesPH:'Allergies, instructions spéciales...',
+      submitBtn:'Commander', wholesaleBtn:'Commande en gros / Événements',
+      successTitle:'Commande reçue', successText:'Merci pour ta commande. On t\'a envoyé un courriel avec tous les détails.',
+      paymentTitle:'Instructions de paiement',
+      paymentInstructions:'Pour confirmer ta commande, effectue le paiement par <strong>Interac virement</strong> à:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Une fois le paiement confirmé, ta commande est réservée.',
+      successNote:'Ta commande est confirmée une fois le paiement reçu.',
+      newOrderBtn:'Nouvelle commande', footerBulk:'Événements et commandes en gros — écris-nous sur Instagram',
+      wTitle:'En Gros / Événements', wSubtitle:'Dis-nous les détails et on te contacte pour coordonner.',
+      wLabelName:'Nom complet', wLabelPhone:'Téléphone / WhatsApp', wLabelEmail:'Adresse courriel',
+      wLabelType:'Type de commande', wOptDefault:'Choisis une option',
+      wLabelDetails:'Détails de la commande', wDetailsPH:'Quantité approximative, date, lieu de livraison...',
+      wSubmitBtn:'Envoyer la demande', wSuccessTitle:'Demande envoyée',
+      wSuccessText:'Nous avons reçu ta demande. On te contactera bientôt pour coordonner.',
+      wCloseBtn:'Fermer',
+      alertName:'Veuillez entrer votre nom.', alertInvalidName:'Veuillez entrer un nom valide, sans chiffres.', alertPhone:'Veuillez entrer votre téléphone.', alertInvalidPhone:'Veuillez entrer un numéro de téléphone valide.',
+      alertEmail:'Veuillez entrer un courriel valide.', alertMenu:'Veuillez sélectionner une option du menu.', alertCustomQty:'Veuillez indiquer le nombre de douzaines souhaité.',
+      alertDelivery:'Veuillez sélectionner livraison ou ramassage.', alertAddress:'Veuillez entrer votre adresse.',
+      alertDate:'Veuillez sélectionner un jour de livraison.', sending:'Envoi en cours...',
+      alertWName:'Veuillez entrer votre nom.', alertInvalidWName:'Veuillez entrer un nom valide, sans chiffres.', alertWPhone:'Veuillez entrer votre téléphone.', alertInvalidWPhone:'Veuillez entrer un numéro de téléphone valide.',
+      alertWEmail:'Veuillez entrer un courriel valide.', alertWType:'Veuillez sélectionner le type de commande.',
+      alertWDetails:'Veuillez décrire les détails de votre commande.',
+      deliveryZone0:'Zone proche (0-5 km)', deliveryZone1:'Zone moyenne (5-10 km)',
+      deliveryZone2:'Zone moyenne (10-15 km)', deliveryZone3:'Zone éloignée (15-20 km)',
+      deliveryZone4:'Zone éloignée (20-25 km)', deliveryZone5:'Zone très éloignée (+25 km) — à coordonner',
+      deliveryEstLabel:'Distance estimée', deliveryEstCost:'Coût de livraison estimé', deliveryMatchedLabel:'Adresse trouvée',
+      deliveryEstNote:'Ceci est une estimation. Le prix final est confirmé lors de la commande.',
+      deliveryNotFound:'Adresse introuvable. Vérifie qu\'elle est correcte.',
+      deliveryError:'Une erreur est survenue. Réessaie.',
+      calcBtn:'Calculer le coût de livraison', calculating:'Calcul en cours...',
+    }
+  };
+
+  function formatDeliveryDate(date) {
+    const locale = currentLang === 'fr' ? 'fr-CA' : 'es-CA';
+    const formatted = date.toLocaleDateString(locale, {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+
+  function populateDeliveryDates() {
+    const select = document.getElementById('deliveryDate');
+    const previousValue = select.value;
+    const t = texts[currentLang];
+    select.innerHTML = '';
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.id = 'optDefault';
+    defaultOption.textContent = t.optDefault;
+    select.appendChild(defaultOption);
+
+    const dates = [];
+    const cursor = new Date();
+    cursor.setDate(cursor.getDate() + 1);
+    cursor.setHours(12, 0, 0, 0);
+
+    for (let i = 0; i < 45 && dates.length < 8; i++) {
+      const day = cursor.getDay();
+      if (day === 5 || day === 6) {
+        dates.push(new Date(cursor));
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    dates.forEach(date => {
+      const label = formatDeliveryDate(date);
+      const option = document.createElement('option');
+      option.value = label;
+      option.textContent = label;
+      select.appendChild(option);
+    });
+
+    if ([...select.options].some(option => option.value === previousValue)) {
+      select.value = previousValue;
+    }
+  }
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active',(lang==='es'&&i===0)||(lang==='fr'&&i===1)));
+    const t = texts[lang];
+    document.getElementById('heroBadge').textContent = t.heroBadge;
+    document.getElementById('heroTagline').textContent = t.heroTagline;
+    document.getElementById('sectionPersonal').textContent = t.sectionPersonal;
+    document.getElementById('labelName').textContent = t.labelName;
+    document.getElementById('name').placeholder = t.namePH;
+    document.getElementById('labelPhone').textContent = t.labelPhone;
+    document.getElementById('labelEmail').textContent = t.labelEmail;
+    document.getElementById('sectionMenu').textContent = t.sectionMenu;
+    document.getElementById('menu1qty').textContent = t.menu1qty;
+    document.getElementById('menu1note').textContent = t.menu1note;
+    document.getElementById('menu2qty').textContent = t.menu2qty;
+    document.getElementById('menu2note').textContent = t.menu2note;
+    document.getElementById('menu3qty').textContent = t.menu3qty;
+    document.getElementById('menu3note').textContent = t.menu3note;
+    document.getElementById('labelCustomQty').textContent = t.labelCustomQty;
+    document.getElementById('noticeMenu').textContent = t.noticeMenu;
+    document.getElementById('sectionDelivery').textContent = t.sectionDelivery;
+    document.getElementById('deliveryName').textContent = t.deliveryName;
+    document.getElementById('deliveryDesc').textContent = t.deliveryDesc;
+    document.getElementById('pickupName').textContent = t.pickupName;
+    document.getElementById('pickupDesc').textContent = t.pickupDesc;
+    document.getElementById('labelAddress').textContent = t.labelAddress;
+    document.getElementById('address').placeholder = t.addressPH;
+    document.getElementById('calcBtn').textContent = t.calcBtn;
+    document.getElementById('sectionDate').textContent = t.sectionDate;
+    document.getElementById('labelDate').textContent = t.labelDate;
+    populateDeliveryDates();
+    document.getElementById('noticeDays').textContent = t.noticeDays;
+    document.getElementById('sectionNotes').textContent = t.sectionNotes;
+    document.getElementById('labelNotes').textContent = t.labelNotes;
+    document.getElementById('notes').placeholder = t.notesPH;
+    document.getElementById('submitBtn').textContent = t.submitBtn;
+    document.getElementById('wholesaleBtn').textContent = t.wholesaleBtn;
+    document.getElementById('successTitle').textContent = t.successTitle;
+    document.getElementById('successText').textContent = t.successText;
+    document.getElementById('paymentTitle').textContent = t.paymentTitle;
+    document.getElementById('paymentInstructions').innerHTML = t.paymentInstructions;
+    document.getElementById('successNote').textContent = t.successNote;
+    document.getElementById('newOrderBtn').textContent = t.newOrderBtn;
+    document.getElementById('footerBulk').textContent = t.footerBulk;
+    document.getElementById('wTitle').textContent = t.wTitle;
+    document.getElementById('wSubtitle').textContent = t.wSubtitle;
+    document.getElementById('wLabelName').textContent = t.wLabelName;
+    document.getElementById('wLabelPhone').textContent = t.wLabelPhone;
+    document.getElementById('wLabelEmail').textContent = t.wLabelEmail;
+    document.getElementById('wLabelType').textContent = t.wLabelType;
+    document.getElementById('wOptDefault').textContent = t.wOptDefault;
+    document.getElementById('wLabelDetails').textContent = t.wLabelDetails;
+    document.getElementById('wDetails').placeholder = t.wDetailsPH;
+    document.getElementById('wSubmitBtn').textContent = t.wSubmitBtn;
+    document.getElementById('wSuccessTitle').textContent = t.wSuccessTitle;
+    document.getElementById('wSuccessText').textContent = t.wSuccessText;
+    document.getElementById('wCloseBtn').textContent = t.wCloseBtn;
+  }
+
+  function showCustomQty() {
+    document.getElementById('customQtyGroup').style.display = 'block';
+  }
+
+  function selectMenu(el) {
+    document.querySelectorAll('.menu-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    el.querySelector('input').checked = true;
+    if (!el.querySelector('input').value.includes('mas')) {
+      document.getElementById('customQtyGroup').style.display = 'none';
+      document.getElementById('customQty').value = '';
+    }
+  }
+
+  function selectDelivery(el, type) {
+    deliveryType = type;
+    document.querySelectorAll('.delivery-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    el.querySelector('input').checked = true;
+    document.getElementById('addressGroup').classList.toggle('visible', type === 'delivery');
+    clearDeliveryEstimate();
+  }
+
+  function clearDeliveryEstimate() {
+    document.getElementById('deliveryEstimate').style.display = 'none';
+  }
+
+  function buildMontrealQuery(address) {
+    const normalized = address.trim();
+    const hasCity = /\b(montreal|montréal|laval|longueuil|brossard|verdun|lasalle|saint-laurent|outremont|westmount)\b/i.test(normalized);
+    const hasProvince = /\b(qc|quebec|québec)\b/i.test(normalized);
+    const hasCountry = /\b(canada|ca)\b/i.test(normalized);
+    return normalized + (hasCity ? '' : ', Montréal') + (hasProvince ? '' : ', Québec') + (hasCountry ? '' : ', Canada');
+  }
+
+  async function geocodeAddress(address) {
+    const query = encodeURIComponent(buildMontrealQuery(address));
+    const params = '&format=json&limit=5&addressdetails=1&countrycodes=ca&viewbox=-74.15,45.75,-73.25,45.30&bounded=0';
+    const res = await fetch('https://nominatim.openstreetmap.org/search?q=' + query + params, { headers:{'Accept-Language': currentLang === 'fr' ? 'fr' : 'es'} });
+    const data = await res.json();
+    if (!data || data.length === 0) return null;
+
+    const result = data.find(item => {
+      const display = (item.display_name || '').toLowerCase();
+      return display.includes('québec') || display.includes('quebec');
+    }) || data[0];
+
+    return {
+      lat: parseFloat(result.lat),
+      lng: parseFloat(result.lon),
+      label: result.display_name || address
+    };
+  }
+
+  function getStraightLineDistanceKm(from, to) {
+    const R = 6371;
+    const dLat = (to.lat - from.lat) * Math.PI / 180;
+    const dLng = (to.lng - from.lng) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(from.lat*Math.PI/180)*Math.cos(to.lat*Math.PI/180)*Math.sin(dLng/2)**2;
+    return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)) * 10) / 10;
+  }
+
+  async function getDrivingDistanceKm(from, to) {
+    const coords = from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat;
+    const res = await fetch('https://router.project-osrm.org/route/v1/driving/' + coords + '?overview=false');
+    const data = await res.json();
+    if (data.code !== 'Ok' || !data.routes || !data.routes[0]) {
+      return Math.round(getStraightLineDistanceKm(from, to) * 1.35 * 10) / 10;
+    }
+    return Math.round((data.routes[0].distance / 1000) * 10) / 10;
+  }
+
+  async function getDeliveryOriginCoords() {
+    if (deliveryOriginCoords) return deliveryOriginCoords;
+    deliveryOriginCoords = await geocodeAddress(DELIVERY_ORIGIN_ADDRESS);
+    return deliveryOriginCoords;
+  }
+
+  function getDeliveryCost(km) {
+    const t = texts[currentLang];
+    if (km <= 5)  return { cost:'$5',  label:t.deliveryZone0 };
+    if (km <= 10) return { cost:'$8',  label:t.deliveryZone1 };
+    if (km <= 15) return { cost:'$12', label:t.deliveryZone2 };
+    if (km <= 20) return { cost:'$16', label:t.deliveryZone3 };
+    if (km <= 25) return { cost:'$20', label:t.deliveryZone4 };
+    return { cost:'$25+', label:t.deliveryZone5 };
+  }
+
+  async function calcDelivery() {
+    const t = texts[currentLang];
+    const address = document.getElementById('address').value.trim();
+    if (!address) { alert(t.alertAddress); return; }
+    const btn = document.getElementById('calcBtn');
+    btn.textContent = t.calculating;
+    btn.disabled = true;
+    const estimate = document.getElementById('deliveryEstimate');
+    try {
+      const origin = await getDeliveryOriginCoords();
+      const destination = await geocodeAddress(address + ', Montreal, Quebec, Canada');
+      if (!origin || !destination) {
+        estimate.innerHTML = t.deliveryNotFound;
+        estimate.style.display = 'block';
+        btn.textContent = t.calcBtn; btn.disabled = false; return;
+      }
+      const km = await getDrivingDistanceKm(origin, destination);
+      const { cost, label } = getDeliveryCost(km);
+      estimate.innerHTML = '<strong>' + t.deliveryMatchedLabel + ':</strong> ' + destination.label + '<br><strong>' + t.deliveryEstLabel + ':</strong> ' + km + ' km — ' + label + '<br><strong>' + t.deliveryEstCost + ': ' + cost + '</strong><br><span style=\"font-size:0.78rem;opacity:0.75;\">' + t.deliveryEstNote + '</span>';
+      estimate.style.display = 'block';
+    } catch(e) {
+      estimate.innerHTML = t.deliveryError;
+      estimate.style.display = 'block';
+    }
+    btn.textContent = t.calcBtn; btn.disabled = false;
+  }
+
+  function clearFieldError(id) {
+    document.getElementById(id).classList.remove('field-invalid');
+  }
+
+  function showFieldError(id, message) {
+    const field = document.getElementById(id);
+    field.classList.add('field-invalid');
+    field.focus();
+    alert(message);
+    return false;
+  }
+
+  function isValidName(value) {
+    const normalized = value.trim().replace(/\s+/g, ' ');
+    return normalized.length >= 2 && /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/.test(normalized) && /[A-Za-zÀ-ÖØ-öø-ÿ]{2,}/.test(normalized);
+  }
+
+  function isValidPhone(value) {
+    const digits = value.replace(/\D/g, '');
+    return digits.length >= 10 && digits.length <= 15;
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+  }
+  function submitOrder() {
+    const t = texts[currentLang];
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const menuSelected = document.querySelector('.menu-card.selected input');
+    const deliverySelected = document.querySelector('.delivery-card.selected input');
+    const deliveryDate = document.getElementById('deliveryDate').value;
+    const address = document.getElementById('address').value.trim();
+    const notes = document.getElementById('notes').value.trim();
+
+    ['name','phone','email','customQty','address','deliveryDate'].forEach(clearFieldError);
+
+    if (!name) { showFieldError('name', t.alertName); return; }
+    if (!isValidName(name)) { showFieldError('name', t.alertInvalidName); return; }
+    if (!phone) { showFieldError('phone', t.alertPhone); return; }
+    if (!isValidPhone(phone)) { showFieldError('phone', t.alertInvalidPhone); return; }
+    if (!email || !isValidEmail(email)) { showFieldError('email', t.alertEmail); return; }
+    if (!menuSelected) { alert(t.alertMenu); return; }
+    if (menuSelected.value === 'mas-docenas') {
+      const customQty = parseInt(document.getElementById('customQty').value, 10);
+      if (!customQty || customQty < 3) { showFieldError('customQty', t.alertCustomQty); return; }
+    }
+    if (!deliverySelected) { alert(t.alertDelivery); return; }
+    if (deliveryType === 'delivery' && !address) { showFieldError('address', t.alertAddress); return; }
+    if (!deliveryDate) { showFieldError('deliveryDate', t.alertDate); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = t.sending; btn.disabled = true;
+
+    const menuVal = menuSelected.value === 'mas-docenas'
+      ? (document.getElementById('customQty').value ? document.getElementById('customQty').value + ' docenas (personalizado)' : 'Más de 2 docenas (personalizado)')
+      : menuSelected.value;
+
+    const params = {
+      name,
+      phone,
+      email,
+      business_email: 'tequechamosmtl@gmail.com',
+      menu: menuVal,
+      delivery: deliverySelected.value,
+      address: deliveryType==='delivery' ? address : 'Pickup',
+      date: deliveryDate,
+      notes: notes||'—'
+    };
+
+    const emails = [
+      { label: 'cliente', promise: emailjs.send('service_e7esjlr', 'template_0uqvj9g', params) },
+      { label: 'negocio', promise: emailjs.send('service_e7esjlr', 'template_cdrhe1h', params) }
+    ];
+
+    Promise.allSettled(emails.map(item => item.promise))
+    .then((results) => {
+      const failed = results
+        .map((result, index) => ({ label: emails[index].label, result }))
+        .filter(item => item.result.status === 'rejected');
+
+      if (failed.length === 0) {
+        document.getElementById('formSection').style.display = 'none';
+        document.getElementById('successSection').classList.add('visible');
+        btn.disabled = false; btn.textContent = t.submitBtn;
+        return;
+      }
+
+      console.error('EmailJS envío fallido:', failed.map(item => ({
+        correo: item.label,
+        error: item.result.reason
+      })));
+
+      const failedBusiness = failed.some(item => item.label === 'negocio');
+      const failedCustomer = failed.some(item => item.label === 'cliente');
+
+      if (failedBusiness && failedCustomer) {
+        alert('Hubo un problema al enviar el pedido. Revisa la configuración de los templates en EmailJS.');
+      } else if (failedBusiness) {
+        alert('El correo del cliente se envió, pero la notificación al negocio fallo. Revisa el template del negocio en EmailJS.');
+      } else {
+        document.getElementById('formSection').style.display = 'none';
+        document.getElementById('successSection').classList.add('visible');
+        alert('El pedido llegó al negocio, pero no pudimos enviar la confirmación al cliente.');
+      }
+
+      btn.disabled = false; btn.textContent = t.submitBtn;
+    });
+  }
+
+  function resetForm() {
+    document.getElementById('formSection').style.display = 'block';
+    document.getElementById('successSection').classList.remove('visible');
+    ['name','phone','email','notes','address','customQty'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('deliveryDate').value = '';
+    document.querySelectorAll('.menu-card,.delivery-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('addressGroup').classList.remove('visible');
+    document.getElementById('customQtyGroup').style.display = 'none';
+    document.getElementById('deliveryEstimate').style.display = 'none';
+    deliveryType = '';
+  }
+
+  function openWholesale() {
+    document.getElementById('wholesaleModal').classList.add('visible');
+    document.getElementById('wSuccess').classList.remove('visible');
+    document.getElementById('wFormSection').style.display = 'block';
+  }
+
+  function closeWholesale() {
+    document.getElementById('wholesaleModal').classList.remove('visible');
+    ['wName','wPhone','wEmail','wDetails'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('wType').value = '';
+    document.getElementById('wSuccess').classList.remove('visible');
+    document.getElementById('wFormSection').style.display = 'block';
+    const btn = document.getElementById('wSubmitBtn');
+    btn.disabled = false; btn.textContent = texts[currentLang].wSubmitBtn;
+  }
+
+  setLang(currentLang);
+
+  function submitWholesale() {
+    const t = texts[currentLang];
+    const name = document.getElementById('wName').value.trim();
+    const phone = document.getElementById('wPhone').value.trim();
+    const email = document.getElementById('wEmail').value.trim();
+    const type = document.getElementById('wType').value;
+    const details = document.getElementById('wDetails').value.trim();
+
+    ['wName','wPhone','wEmail','wType','wDetails'].forEach(clearFieldError);
+
+    if (!name) { showFieldError('wName', t.alertWName); return; }
+    if (!isValidName(name)) { showFieldError('wName', t.alertInvalidWName); return; }
+    if (!phone) { showFieldError('wPhone', t.alertWPhone); return; }
+    if (!isValidPhone(phone)) { showFieldError('wPhone', t.alertInvalidWPhone); return; }
+    if (!email || !isValidEmail(email)) { showFieldError('wEmail', t.alertWEmail); return; }
+    if (!type) { showFieldError('wType', t.alertWType); return; }
+    if (!details) { showFieldError('wDetails', t.alertWDetails); return; }
+
+    const btn = document.getElementById('wSubmitBtn');
+    btn.textContent = t.sending; btn.disabled = true;
+
+    emailjs.send('service_e7esjlr', 'template_cdrhe1h', { name, phone, email, menu:'PEDIDO AL MAYOR / EVENTO: '+type, delivery:'A coordinar', address:'A coordinar', date:'A coordinar', notes:details })
+    .then(() => {
+      document.getElementById('wFormSection').style.display = 'none';
+      document.getElementById('wSuccess').classList.add('visible');
+    })
+    .catch(() => {
+      alert('Hubo un problema al enviar. Por favor intenta de nuevo.');
+      btn.disabled = false; btn.textContent = t.wSubmitBtn;
+    });
+  }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
