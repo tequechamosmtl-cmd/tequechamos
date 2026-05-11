@@ -209,7 +209,7 @@
   textarea { resize: vertical; min-height: 80px; }
 
   /* Menu cards */
-  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
   .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
   .menu-card, .delivery-card {
@@ -255,9 +255,36 @@
     margin-top: 6px; font-weight: 600;
   }
 
+  .qty-controls {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .menu-card.expanded .qty-controls { display: flex; }
+  .qty-btn {
+    width: 42px; height: 42px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    color: var(--orange);
+    font-family: 'Karla', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .qty-btn:hover { border-color: var(--orange); background: #FFF8EE; }
+  .qty-input {
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 800;
+    padding: 10px 12px;
+  }
+
   #addressGroup { display:none; margin-top:12px; }
   #addressGroup.visible { display:block; }
-  #customQtyGroup { display:none; margin-top:12px; }
 
   /* Calc button */
   .calc-btn {
@@ -495,29 +522,16 @@
           <div class="section-title" id="sectionMenu">Tu pedido</div>
         </div>
         <div class="menu-grid">
-          <label class="menu-card" onclick="selectMenu(this)">
-            <input type="radio" name="menu" value="1 docena — $20">
-            <div class="menu-qty" id="menu1qty">1 Docena</div>
-            <div class="menu-price">$20</div>
-            <div class="menu-note" id="menu1note">12 tequeños + 2 salsas</div>
-          </label>
-          <label class="menu-card" onclick="selectMenu(this)">
-            <input type="radio" name="menu" value="2 docenas — $35">
-            <div class="menu-qty" id="menu2qty">2 Docenas</div>
-            <div class="menu-price">$35</div>
-            <div class="menu-note" id="menu2note">24 tequeños + 4 salsas</div>
-          </label>
-          <label class="menu-card" onclick="selectMenu(this); showCustomQty()">
-            <input type="radio" name="menu" value="mas-docenas">
-            <div class="menu-qty" id="menu3qty">+ Docenas</div>
-            <div class="menu-price" style="font-size:1rem; margin-top:4px;" id="menu3price">A convenir</div>
-            <div class="menu-note" id="menu3note">Pedido personalizado</div>
-          </label>
-        </div>
-        <div id="customQtyGroup">
-          <div class="form-group" style="margin-top:14px;">
-            <label id="labelCustomQty">¿Cuántas docenas necesitas?</label>
-            <input type="number" id="customQty" min="3" step="1" placeholder="Ej: 5">
+          <div class="menu-card selected" id="menuCard" onclick="selectMenu()">
+            <input type="hidden" name="menu" id="menuSelected" value="1">
+            <div class="menu-qty" id="menuQtyTitle">Docenas</div>
+            <div class="menu-price" id="menuPrice">$20</div>
+            <div class="menu-note" id="menuQtyNote">1 docena — 12 tequeños + 2 salsas</div>
+            <div class="qty-controls" id="qtyControls">
+              <button type="button" class="qty-btn" onclick="changeQty(-1, event)" aria-label="Menos docenas">−</button>
+              <input type="number" id="customQty" class="qty-input" min="1" step="1" value="1" inputmode="numeric" oninput="updateQtyFromInput()" onclick="event.stopPropagation()">
+              <button type="button" class="qty-btn" onclick="changeQty(1, event)" aria-label="Más docenas">+</button>
+            </div>
           </div>
         </div>
         <div class="notice" id="noticeMenu">Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.</div>
@@ -672,10 +686,11 @@
       heroTagline: 'Los mejores tequeños de Montreal — frescos, artesanales y listos para freír.',
       sectionPersonal:'Tus datos', labelName:'Nombre completo', namePH:'Tu nombre completo',
       labelPhone:'Teléfono', labelEmail:'Correo electrónico',
-      sectionMenu:'Tu pedido', menu1qty:'1 Docena', menu1note:'12 tequeños + 2 salsas',
-      menu2qty:'2 Docenas', menu2note:'24 tequeños + 4 salsas',
-      menu3qty:'+ Docenas', menu3note:'Pedido personalizado',
-      labelCustomQty:'¿Cuántas docenas necesitas?',
+      sectionMenu:'Tu pedido', menuQtyTitle:'Docenas',
+      menuQtySingular:'docena', menuQtyPlural:'docenas',
+      menuTequenos:'tequeños', menuSauces:'salsas',
+      menuPriceConfirm:'A confirmar',
+      alertCustomQty:'Por favor indica cuántas docenas necesitas.',
       noticeMenu:'Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.',
       sectionDelivery:'Entrega', deliveryName:'Delivery', deliveryDesc:'Te lo llevamos a domicilio',
       pickupName:'Pickup', pickupDesc:'Recógelo en punto acordado',
@@ -699,7 +714,7 @@
       wSuccessText:'Recibimos tu solicitud. Te contactaremos pronto para coordinar todos los detalles.',
       wCloseBtn:'Cerrar',
       alertName:'Por favor ingresa tu nombre.', alertInvalidName:'Por favor ingresa un nombre válido, sin números.', alertPhone:'Por favor ingresa tu teléfono.', alertInvalidPhone:'Por favor ingresa un número de teléfono válido.',
-      alertEmail:'Por favor ingresa un correo válido.', alertMenu:'Por favor selecciona una opción del menú.', alertCustomQty:'Por favor indica cuántas docenas necesitas.',
+      alertEmail:'Por favor ingresa un correo válido.', alertMenu:'Por favor selecciona una opción del menú.',
       alertDelivery:'Por favor selecciona delivery o pickup.', alertAddress:'Por favor ingresa tu dirección.',
       alertDate:'Por favor selecciona un día de entrega.', sending:'Enviando...',
       alertWName:'Por favor ingresa tu nombre.', alertInvalidWName:'Por favor ingresa un nombre válido, sin números.', alertWPhone:'Por favor ingresa tu teléfono.', alertInvalidWPhone:'Por favor ingresa un número de teléfono válido.',
@@ -711,10 +726,11 @@
       heroTagline: 'Les meilleurs tequeños de Montreal — frais, artisanaux et prêts à frire.',
       sectionPersonal:'Tes infos', labelName:'Nom complet', namePH:'Ton nom complet',
       labelPhone:'Téléphone', labelEmail:'Adresse courriel',
-      sectionMenu:'Ta commande', menu1qty:'1 Douzaine', menu1note:'12 tequeños + 2 sauces',
-      menu2qty:'2 Douzaines', menu2note:'24 tequeños + 4 sauces',
-      menu3qty:'+ Douzaines', menu3note:'Commande personnalisée',
-      labelCustomQty:'Combien de douzaines avez-vous besoin?',
+      sectionMenu:'Ta commande', menuQtyTitle:'Douzaines',
+      menuQtySingular:'douzaine', menuQtyPlural:'douzaines',
+      menuTequenos:'tequeños', menuSauces:'sauces',
+      menuPriceConfirm:'À confirmer',
+      alertCustomQty:'Veuillez indiquer le nombre de douzaines souhaité.',
       noticeMenu:'Sauces tartares incluses. Livrés réfrigérés, prêts à frire ou air fryer.',
       sectionDelivery:'Livraison', deliveryName:'Livraison', deliveryDesc:'On vous livre à domicile',
       pickupName:'Ramassage', pickupDesc:'Ramassez au point convenu',
@@ -738,7 +754,7 @@
       wSuccessText:'Nous avons reçu ta demande. On te contactera bientôt pour coordonner.',
       wCloseBtn:'Fermer',
       alertName:'Veuillez entrer votre nom.', alertInvalidName:'Veuillez entrer un nom valide, sans chiffres.', alertPhone:'Veuillez entrer votre téléphone.', alertInvalidPhone:'Veuillez entrer un numéro de téléphone valide.',
-      alertEmail:'Veuillez entrer un courriel valide.', alertMenu:'Veuillez sélectionner une option du menu.', alertCustomQty:'Veuillez indiquer le nombre de douzaines souhaité.',
+      alertEmail:'Veuillez entrer un courriel valide.', alertMenu:'Veuillez sélectionner une option du menu.',
       alertDelivery:'Veuillez sélectionner livraison ou ramassage.', alertAddress:'Veuillez entrer votre adresse.',
       alertDate:'Veuillez sélectionner un jour de livraison.', sending:'Envoi en cours...',
       alertWName:'Veuillez entrer votre nom.', alertInvalidWName:'Veuillez entrer un nom valide, sans chiffres.', alertWPhone:'Veuillez entrer votre téléphone.', alertInvalidWPhone:'Veuillez entrer un numéro de téléphone valide.',
@@ -807,13 +823,8 @@
     document.getElementById('labelPhone').textContent = t.labelPhone;
     document.getElementById('labelEmail').textContent = t.labelEmail;
     document.getElementById('sectionMenu').textContent = t.sectionMenu;
-    document.getElementById('menu1qty').textContent = t.menu1qty;
-    document.getElementById('menu1note').textContent = t.menu1note;
-    document.getElementById('menu2qty').textContent = t.menu2qty;
-    document.getElementById('menu2note').textContent = t.menu2note;
-    document.getElementById('menu3qty').textContent = t.menu3qty;
-    document.getElementById('menu3note').textContent = t.menu3note;
-    document.getElementById('labelCustomQty').textContent = t.labelCustomQty;
+    document.getElementById('menuQtyTitle').textContent = t.menuQtyTitle;
+    updateMenuSummary();
     document.getElementById('noticeMenu').textContent = t.noticeMenu;
     document.getElementById('sectionDelivery').textContent = t.sectionDelivery;
     document.getElementById('deliveryName').textContent = t.deliveryName;
@@ -854,18 +865,40 @@
     document.getElementById('wCloseBtn').textContent = t.wCloseBtn;
   }
 
-  function showCustomQty() {
-    document.getElementById('customQtyGroup').style.display = 'block';
+  function getMenuPrice(qty) {
+    if (qty === 1) return '$20';
+    if (qty === 2) return '$35';
+    return texts[currentLang].menuPriceConfirm;
   }
 
-  function selectMenu(el) {
-    document.querySelectorAll('.menu-card').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    el.querySelector('input').checked = true;
-    if (!el.querySelector('input').value.includes('mas')) {
-      document.getElementById('customQtyGroup').style.display = 'none';
-      document.getElementById('customQty').value = '';
-    }
+  function updateMenuSummary() {
+    const t = texts[currentLang];
+    const qtyInput = document.getElementById('customQty');
+    const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
+    qtyInput.value = qty;
+    document.getElementById('menuSelected').value = qty;
+    const unit = qty === 1 ? t.menuQtySingular : t.menuQtyPlural;
+    const tequenos = qty * 12;
+    const sauces = qty * 2;
+    document.getElementById('menuPrice').textContent = getMenuPrice(qty);
+    document.getElementById('menuQtyNote').textContent = qty + ' ' + unit + ' — ' + tequenos + ' ' + t.menuTequenos + ' + ' + sauces + ' ' + t.menuSauces;
+  }
+
+  function selectMenu() {
+    const card = document.getElementById('menuCard');
+    card.classList.add('selected');
+    card.classList.toggle('expanded');
+  }
+
+  function changeQty(delta, event) {
+    if (event) event.stopPropagation();
+    const input = document.getElementById('customQty');
+    input.value = Math.max(1, (parseInt(input.value, 10) || 1) + delta);
+    updateMenuSummary();
+  }
+
+  function updateQtyFromInput() {
+    updateMenuSummary();
   }
 
   function selectDelivery(el, type) {
@@ -921,10 +954,8 @@
     if (!isValidPhone(phone)) { showFieldError('phone', t.alertInvalidPhone); return; }
     if (!email || !isValidEmail(email)) { showFieldError('email', t.alertEmail); return; }
     if (!menuSelected) { alert(t.alertMenu); return; }
-    if (menuSelected.value === 'mas-docenas') {
-      const customQty = parseInt(document.getElementById('customQty').value, 10);
-      if (!customQty || customQty < 3) { showFieldError('customQty', t.alertCustomQty); return; }
-    }
+    const customQty = parseInt(document.getElementById('customQty').value, 10);
+    if (!customQty || customQty < 1) { showFieldError('customQty', t.alertCustomQty); return; }
     if (!deliverySelected) { alert(t.alertDelivery); return; }
     if (deliveryType === 'delivery' && !address) { showFieldError('address', t.alertAddress); return; }
     if (!deliveryDate) { showFieldError('deliveryDate', t.alertDate); return; }
@@ -932,9 +963,8 @@
     const btn = document.getElementById('submitBtn');
     btn.textContent = t.sending; btn.disabled = true;
 
-    const menuVal = menuSelected.value === 'mas-docenas'
-      ? (document.getElementById('customQty').value ? document.getElementById('customQty').value + ' docenas (personalizado)' : 'Más de 2 docenas (personalizado)')
-      : menuSelected.value;
+    updateMenuSummary();
+    const menuVal = customQty + ' ' + (customQty === 1 ? t.menuQtySingular : t.menuQtyPlural) + ' — ' + getMenuPrice(customQty);
 
     const params = {
       name,
@@ -991,11 +1021,14 @@
   function resetForm() {
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('successSection').classList.remove('visible');
-    ['name','phone','email','notes','address','customQty'].forEach(id => document.getElementById(id).value = '');
+    ['name','phone','email','notes','address'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('customQty').value = '1';
     document.getElementById('deliveryDate').value = '';
-    document.querySelectorAll('.menu-card,.delivery-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.delivery-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('menuCard').classList.add('selected');
+    document.getElementById('menuCard').classList.remove('expanded');
     document.getElementById('addressGroup').classList.remove('visible');
-    document.getElementById('customQtyGroup').style.display = 'none';
+    updateMenuSummary();
     deliveryType = '';
   }
 
