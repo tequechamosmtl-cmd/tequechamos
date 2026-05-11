@@ -522,14 +522,14 @@
           <div class="section-title" id="sectionMenu">Tu pedido</div>
         </div>
         <div class="menu-grid">
-          <div class="menu-card selected" id="menuCard" onclick="selectMenu()">
+          <div class="menu-card" id="menuCard" onclick="selectMenu()">
             <input type="hidden" name="menu" id="menuSelected" value="1">
             <div class="menu-qty" id="menuQtyTitle">Docenas</div>
             <div class="menu-price" id="menuPrice">$20</div>
             <div class="menu-note" id="menuQtyNote">1 docena — 12 tequeños + 2 salsas</div>
             <div class="qty-controls" id="qtyControls">
               <button type="button" class="qty-btn" onclick="changeQty(-1, event)" aria-label="Menos docenas">−</button>
-              <input type="number" id="customQty" class="qty-input" min="1" step="1" value="1" inputmode="numeric" oninput="updateQtyFromInput()" onclick="event.stopPropagation()">
+              <input type="number" id="customQty" class="qty-input" min="1" max="12" step="1" value="1" inputmode="numeric" oninput="updateQtyFromInput()" onclick="event.stopPropagation()">
               <button type="button" class="qty-btn" onclick="changeQty(1, event)" aria-label="Más docenas">+</button>
             </div>
           </div>
@@ -689,8 +689,8 @@
       sectionMenu:'Tu pedido', menuQtyTitle:'Docenas',
       menuQtySingular:'docena', menuQtyPlural:'docenas',
       menuTequenos:'tequeños', menuSauces:'salsas',
-      menuPriceConfirm:'A confirmar',
       alertCustomQty:'Por favor indica cuántas docenas necesitas.',
+      alertMaxQty:'Puedes pedir hasta 12 docenas por este formulario.',
       noticeMenu:'Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.',
       sectionDelivery:'Entrega', deliveryName:'Delivery', deliveryDesc:'Te lo llevamos a domicilio',
       pickupName:'Pickup', pickupDesc:'Recógelo en punto acordado',
@@ -729,8 +729,8 @@
       sectionMenu:'Ta commande', menuQtyTitle:'Douzaines',
       menuQtySingular:'douzaine', menuQtyPlural:'douzaines',
       menuTequenos:'tequeños', menuSauces:'sauces',
-      menuPriceConfirm:'À confirmer',
       alertCustomQty:'Veuillez indiquer le nombre de douzaines souhaité.',
+      alertMaxQty:'Vous pouvez commander jusqu’à 12 douzaines avec ce formulaire.',
       noticeMenu:'Sauces tartares incluses. Livrés réfrigérés, prêts à frire ou air fryer.',
       sectionDelivery:'Livraison', deliveryName:'Livraison', deliveryDesc:'On vous livre à domicile',
       pickupName:'Ramassage', pickupDesc:'Ramassez au point convenu',
@@ -866,15 +866,15 @@
   }
 
   function getMenuPrice(qty) {
-    if (qty === 1) return '$20';
-    if (qty === 2) return '$35';
-    return texts[currentLang].menuPriceConfirm;
+    const pairs = Math.floor(qty / 2);
+    const singles = qty % 2;
+    return '$' + ((pairs * 35) + (singles * 20));
   }
 
   function updateMenuSummary() {
     const t = texts[currentLang];
     const qtyInput = document.getElementById('customQty');
-    const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
+    const qty = Math.min(12, Math.max(1, parseInt(qtyInput.value, 10) || 1));
     qtyInput.value = qty;
     document.getElementById('menuSelected').value = qty;
     const unit = qty === 1 ? t.menuQtySingular : t.menuQtyPlural;
@@ -893,7 +893,7 @@
   function changeQty(delta, event) {
     if (event) event.stopPropagation();
     const input = document.getElementById('customQty');
-    input.value = Math.max(1, (parseInt(input.value, 10) || 1) + delta);
+    input.value = Math.min(12, Math.max(1, (parseInt(input.value, 10) || 1) + delta));
     updateMenuSummary();
   }
 
@@ -956,6 +956,7 @@
     if (!menuSelected) { alert(t.alertMenu); return; }
     const customQty = parseInt(document.getElementById('customQty').value, 10);
     if (!customQty || customQty < 1) { showFieldError('customQty', t.alertCustomQty); return; }
+    if (customQty > 12) { showFieldError('customQty', t.alertMaxQty); return; }
     if (!deliverySelected) { alert(t.alertDelivery); return; }
     if (deliveryType === 'delivery' && !address) { showFieldError('address', t.alertAddress); return; }
     if (!deliveryDate) { showFieldError('deliveryDate', t.alertDate); return; }
@@ -1025,7 +1026,7 @@
     document.getElementById('customQty').value = '1';
     document.getElementById('deliveryDate').value = '';
     document.querySelectorAll('.delivery-card').forEach(c => c.classList.remove('selected'));
-    document.getElementById('menuCard').classList.add('selected');
+    document.getElementById('menuCard').classList.remove('selected');
     document.getElementById('menuCard').classList.remove('expanded');
     document.getElementById('addressGroup').classList.remove('visible');
     updateMenuSummary();
