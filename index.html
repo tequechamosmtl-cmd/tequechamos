@@ -546,10 +546,9 @@
         <div id="addressGroup">
           <div class="form-group" style="margin-top:14px;">
             <label id="labelAddress">Tu dirección</label>
-            <input type="text" id="address" placeholder="Calle, ciudad, código postal" autocomplete="street-address" oninput="clearDeliveryEstimate()">
-            <button type="button" class="calc-btn" onclick="calcDelivery()" id="calcBtn">Calcular costo de delivery</button>
+            <input type="text" id="address" placeholder="Calle, ciudad, código postal" autocomplete="street-address">
           </div>
-          <div id="deliveryEstimate" style="display:none;" class="notice"></div>
+          <div class="notice" id="deliveryPriceNote">El precio del delivery varía según la distancia. Te contactaremos para confirmar el costo final.</div>
         </div>
       </div>
 
@@ -666,8 +665,6 @@
 <script>
   let currentLang = 'es';
   let deliveryType = '';
-  const DELIVERY_ORIGIN_ADDRESS = '7502 Rue Terbois, Montréal, Québec, Canada';
-  let deliveryOriginCoords = null;
 
   const texts = {
     es: {
@@ -683,7 +680,7 @@
       sectionDelivery:'Entrega', deliveryName:'Delivery', deliveryDesc:'Te lo llevamos a domicilio',
       pickupName:'Pickup', pickupDesc:'Recógelo en punto acordado',
       labelAddress:'Tu dirección', addressPH:'Calle, ciudad, código postal',
-      calcBtn:'Calcular costo de delivery',
+      deliveryPriceNote:'El precio del delivery varía según la distancia. Te contactaremos para confirmar el costo final.',
       sectionDate:'Día de entrega', labelDate:'Cuándo prefieres recibir tu pedido',
       optDefault:'Selecciona una fecha',
       noticeDays:'Elige entre los próximos viernes y sábados disponibles.',
@@ -708,14 +705,6 @@
       alertWName:'Por favor ingresa tu nombre.', alertInvalidWName:'Por favor ingresa un nombre válido, sin números.', alertWPhone:'Por favor ingresa tu teléfono.', alertInvalidWPhone:'Por favor ingresa un número de teléfono válido.',
       alertWEmail:'Por favor ingresa un correo válido.', alertWType:'Por favor selecciona el tipo de pedido.',
       alertWDetails:'Por favor describe los detalles de tu pedido.',
-      deliveryZone0:'Zona cercana (0-5 km)', deliveryZone1:'Zona media (5-10 km)',
-      deliveryZone2:'Zona media (10-15 km)', deliveryZone3:'Zona lejana (15-20 km)',
-      deliveryZone4:'Zona lejana (20-25 km)', deliveryZone5:'Zona muy lejana (+25 km) — a coordinar',
-      deliveryEstLabel:'Distancia estimada', deliveryEstCost:'Costo de delivery estimado', deliveryMatchedLabel:'Dirección encontrada',
-      deliveryEstNote:'Este es un estimado. El precio final se confirma al momento del pedido.',
-      deliveryNotFound:'No pudimos encontrar esa dirección. Verifica que sea correcta.',
-      deliveryError:'Hubo un error al calcular. Intenta de nuevo.',
-      calcBtn:'Calcular costo de delivery', calculating:'Calculando...',
     },
     fr: {
       heroBadge: 'De Maracaibo',
@@ -730,7 +719,7 @@
       sectionDelivery:'Livraison', deliveryName:'Livraison', deliveryDesc:'On vous livre à domicile',
       pickupName:'Ramassage', pickupDesc:'Ramassez au point convenu',
       labelAddress:'Ton adresse', addressPH:'Rue, ville, code postal',
-      calcBtn:'Calculer le coût de livraison',
+      deliveryPriceNote:'Le prix de livraison varie selon la distance. Nous te contacterons pour confirmer le coût final.',
       sectionDate:'Jour de livraison', labelDate:'Quand veux-tu recevoir ta commande',
       optDefault:'Choisis une date',
       noticeDays:'Choisis parmi les prochains vendredis et samedis disponibles.',
@@ -755,14 +744,6 @@
       alertWName:'Veuillez entrer votre nom.', alertInvalidWName:'Veuillez entrer un nom valide, sans chiffres.', alertWPhone:'Veuillez entrer votre téléphone.', alertInvalidWPhone:'Veuillez entrer un numéro de téléphone valide.',
       alertWEmail:'Veuillez entrer un courriel valide.', alertWType:'Veuillez sélectionner le type de commande.',
       alertWDetails:'Veuillez décrire les détails de votre commande.',
-      deliveryZone0:'Zone proche (0-5 km)', deliveryZone1:'Zone moyenne (5-10 km)',
-      deliveryZone2:'Zone moyenne (10-15 km)', deliveryZone3:'Zone éloignée (15-20 km)',
-      deliveryZone4:'Zone éloignée (20-25 km)', deliveryZone5:'Zone très éloignée (+25 km) — à coordonner',
-      deliveryEstLabel:'Distance estimée', deliveryEstCost:'Coût de livraison estimé', deliveryMatchedLabel:'Adresse trouvée',
-      deliveryEstNote:'Ceci est une estimation. Le prix final est confirmé lors de la commande.',
-      deliveryNotFound:'Adresse introuvable. Vérifie qu\'elle est correcte.',
-      deliveryError:'Une erreur est survenue. Réessaie.',
-      calcBtn:'Calculer le coût de livraison', calculating:'Calcul en cours...',
     }
   };
 
@@ -841,7 +822,7 @@
     document.getElementById('pickupDesc').textContent = t.pickupDesc;
     document.getElementById('labelAddress').textContent = t.labelAddress;
     document.getElementById('address').placeholder = t.addressPH;
-    document.getElementById('calcBtn').textContent = t.calcBtn;
+    document.getElementById('deliveryPriceNote').textContent = t.deliveryPriceNote;
     document.getElementById('sectionDate').textContent = t.sectionDate;
     document.getElementById('labelDate').textContent = t.labelDate;
     populateDeliveryDates();
@@ -893,99 +874,7 @@
     el.classList.add('selected');
     el.querySelector('input').checked = true;
     document.getElementById('addressGroup').classList.toggle('visible', type === 'delivery');
-    clearDeliveryEstimate();
-  }
 
-  function clearDeliveryEstimate() {
-    document.getElementById('deliveryEstimate').style.display = 'none';
-  }
-
-  function buildMontrealQuery(address) {
-    const normalized = address.trim();
-    const hasCity = /\b(montreal|montréal|laval|longueuil|brossard|verdun|lasalle|saint-laurent|outremont|westmount)\b/i.test(normalized);
-    const hasProvince = /\b(qc|quebec|québec)\b/i.test(normalized);
-    const hasCountry = /\b(canada|ca)\b/i.test(normalized);
-    return normalized + (hasCity ? '' : ', Montréal') + (hasProvince ? '' : ', Québec') + (hasCountry ? '' : ', Canada');
-  }
-
-  async function geocodeAddress(address) {
-    const query = encodeURIComponent(buildMontrealQuery(address));
-    const params = '&format=json&limit=5&addressdetails=1&countrycodes=ca&viewbox=-74.15,45.75,-73.25,45.30&bounded=0';
-    const res = await fetch('https://nominatim.openstreetmap.org/search?q=' + query + params, { headers:{'Accept-Language': currentLang === 'fr' ? 'fr' : 'es'} });
-    const data = await res.json();
-    if (!data || data.length === 0) return null;
-
-    const result = data.find(item => {
-      const display = (item.display_name || '').toLowerCase();
-      return display.includes('québec') || display.includes('quebec');
-    }) || data[0];
-
-    return {
-      lat: parseFloat(result.lat),
-      lng: parseFloat(result.lon),
-      label: result.display_name || address
-    };
-  }
-
-  function getStraightLineDistanceKm(from, to) {
-    const R = 6371;
-    const dLat = (to.lat - from.lat) * Math.PI / 180;
-    const dLng = (to.lng - from.lng) * Math.PI / 180;
-    const a = Math.sin(dLat/2)**2 + Math.cos(from.lat*Math.PI/180)*Math.cos(to.lat*Math.PI/180)*Math.sin(dLng/2)**2;
-    return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)) * 10) / 10;
-  }
-
-  async function getDrivingDistanceKm(from, to) {
-    const coords = from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat;
-    const res = await fetch('https://router.project-osrm.org/route/v1/driving/' + coords + '?overview=false');
-    const data = await res.json();
-    if (data.code !== 'Ok' || !data.routes || !data.routes[0]) {
-      return Math.round(getStraightLineDistanceKm(from, to) * 1.35 * 10) / 10;
-    }
-    return Math.round((data.routes[0].distance / 1000) * 10) / 10;
-  }
-
-  async function getDeliveryOriginCoords() {
-    if (deliveryOriginCoords) return deliveryOriginCoords;
-    deliveryOriginCoords = await geocodeAddress(DELIVERY_ORIGIN_ADDRESS);
-    return deliveryOriginCoords;
-  }
-
-  function getDeliveryCost(km) {
-    const t = texts[currentLang];
-    if (km <= 5)  return { cost:'$5',  label:t.deliveryZone0 };
-    if (km <= 10) return { cost:'$8',  label:t.deliveryZone1 };
-    if (km <= 15) return { cost:'$12', label:t.deliveryZone2 };
-    if (km <= 20) return { cost:'$16', label:t.deliveryZone3 };
-    if (km <= 25) return { cost:'$20', label:t.deliveryZone4 };
-    return { cost:'$25+', label:t.deliveryZone5 };
-  }
-
-  async function calcDelivery() {
-    const t = texts[currentLang];
-    const address = document.getElementById('address').value.trim();
-    if (!address) { alert(t.alertAddress); return; }
-    const btn = document.getElementById('calcBtn');
-    btn.textContent = t.calculating;
-    btn.disabled = true;
-    const estimate = document.getElementById('deliveryEstimate');
-    try {
-      const origin = await getDeliveryOriginCoords();
-      const destination = await geocodeAddress(address + ', Montreal, Quebec, Canada');
-      if (!origin || !destination) {
-        estimate.innerHTML = t.deliveryNotFound;
-        estimate.style.display = 'block';
-        btn.textContent = t.calcBtn; btn.disabled = false; return;
-      }
-      const km = await getDrivingDistanceKm(origin, destination);
-      const { cost, label } = getDeliveryCost(km);
-      estimate.innerHTML = '<strong>' + t.deliveryMatchedLabel + ':</strong> ' + destination.label + '<br><strong>' + t.deliveryEstLabel + ':</strong> ' + km + ' km — ' + label + '<br><strong>' + t.deliveryEstCost + ': ' + cost + '</strong><br><span style=\"font-size:0.78rem;opacity:0.75;\">' + t.deliveryEstNote + '</span>';
-      estimate.style.display = 'block';
-    } catch(e) {
-      estimate.innerHTML = t.deliveryError;
-      estimate.style.display = 'block';
-    }
-    btn.textContent = t.calcBtn; btn.disabled = false;
   }
 
   function clearFieldError(id) {
@@ -1107,7 +996,6 @@
     document.querySelectorAll('.menu-card,.delivery-card').forEach(c => c.classList.remove('selected'));
     document.getElementById('addressGroup').classList.remove('visible');
     document.getElementById('customQtyGroup').style.display = 'none';
-    document.getElementById('deliveryEstimate').style.display = 'none';
     deliveryType = '';
   }
 
@@ -1163,6 +1051,8 @@
 </script>
 </body>
 </html>
+
+
 
 
 
