@@ -6,7 +6,7 @@
 <title>TequeChamos — Pedidos</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>emailjs.init('474kEvdnpp4xNmagP');</script>
+<script>if (window.emailjs) emailjs.init('474kEvdnpp4xNmagP');</script>
 <style>
   @font-face {
     font-family: 'Talina';
@@ -356,16 +356,6 @@
   #addressGroup { display:none; margin-top:12px; }
   #addressGroup.visible { display:block; }
 
-  /* Calc button */
-  .calc-btn {
-    width: 100%; padding: 11px; margin-top: 8px;
-    background: white; border: 2px solid var(--border);
-    border-radius: 10px; font-family: 'Karla', sans-serif;
-    font-size: 0.82rem; font-weight: 700; color: var(--mid);
-    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
-  }
-  .calc-btn:hover { border-color: var(--orange); color: var(--orange); background: #FFF8EE; }
-
   /* Notice */
   .notice {
     margin-top: 12px; padding: 13px 16px;
@@ -529,6 +519,16 @@
     .content{padding:40px 20px 60px;}
     .hero{padding:30px 20px 44px;}
     .modal-body{padding:24px 20px 20px;}
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
+    .blob { display: none; }
   }
 </style>
 </head>
@@ -736,9 +736,9 @@
           <label id="wLabelType">Tipo de pedido</label>
           <select id="wType" required>
             <option value="" id="wOptDefault">Selecciona una opción</option>
-            <option value="Pedido al mayor">Pedido al mayor</option>
-            <option value="Evento">Evento</option>
-            <option value="Corporativo / Oficina">Corporativo / Oficina</option>
+            <option value="Pedido al mayor" id="wOptBulk">Pedido al mayor</option>
+            <option value="Evento" id="wOptEvent">Evento</option>
+            <option value="Corporativo / Oficina" id="wOptCorporate">Corporativo / Oficina</option>
           </select>
         </div>
         <div class="form-group">
@@ -762,6 +762,10 @@
 <script>
   let currentLang = 'es';
   let deliveryType = '';
+  const EMAILJS_SERVICE_ID = 'service_e7esjlr';
+  const CUSTOMER_TEMPLATE_ID = 'template_0uqvj9g';
+  const BUSINESS_TEMPLATE_ID = 'template_cdrhe1h';
+  const BUSINESS_EMAIL = 'tequechamosmtl@gmail.com';
 
   const texts = {
     es: {
@@ -789,7 +793,7 @@
       noticeDays:'Elige entre los próximos viernes y sábados disponibles.',
       sectionNotes:'Notas', labelNotes:'Nota adicional (opcional)', notesPH:'Alergias, instrucciones especiales...',
       submitBtn:'Hacer pedido', wholesaleBtn:'Pedido al mayor / Eventos',
-      successTitle:'Pedido recibido', successText:'Gracias por tu pedido. Te enviamos un correo con todos los detalles.',
+      successTitle:'Pedido recibido', successText:'Gracias por tu pedido. Recibimos tus detalles y te contactaremos pronto para confirmar.',
       paymentTitle:'Instrucciones de pago',
       paymentInstructions:'Para confirmar tu pedido, realiza el pago por <strong>Interac e-transfer</strong> a:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Una vez confirmado el pago, tu pedido queda reservado.',
       successNote:'Tu pedido se confirma una vez recibamos el pago.',
@@ -797,6 +801,7 @@
       wTitle:'Al Mayor / Eventos', wSubtitle:'Cuéntanos los detalles y te contactamos para coordinar todo.',
       wLabelName:'Nombre completo', wLabelPhone:'Teléfono / WhatsApp', wLabelEmail:'Correo electrónico',
       wLabelType:'Tipo de pedido', wOptDefault:'Selecciona una opción',
+      wOptBulk:'Pedido al mayor', wOptEvent:'Evento', wOptCorporate:'Corporativo / Oficina',
       wLabelDetails:'Detalles del pedido', wDetailsPH:'Cantidad aproximada, fecha del evento, lugar de entrega...',
       wSubmitBtn:'Enviar solicitud', wSuccessTitle:'Solicitud enviada',
       wSuccessText:'Recibimos tu solicitud. Te contactaremos pronto para coordinar todos los detalles.',
@@ -805,6 +810,10 @@
       alertEmail:'Por favor ingresa un correo válido.', alertMenu:'Por favor selecciona una opción del menú.',
       alertDelivery:'Por favor selecciona delivery o pickup.', alertAddress:'Por favor ingresa tu dirección.',
       alertDate:'Por favor selecciona un día de entrega.', sending:'Enviando...',
+      alertSendError:'No pudimos enviar el pedido. Por favor intenta de nuevo o escríbenos por Instagram.',
+      alertCustomerConfirmationError:'Recibimos tu pedido, pero no pudimos enviar el correo de confirmación. Te contactaremos pronto.',
+      alertWholesaleError:'No pudimos enviar la solicitud. Por favor intenta de nuevo o escríbenos por Instagram.',
+      alertEmailUnavailable:'El sistema de correo no cargó correctamente. Recarga la página e intenta de nuevo.',
       alertWName:'Por favor ingresa tu nombre.', alertInvalidWName:'Por favor ingresa un nombre válido, sin números.', alertWPhone:'Por favor ingresa tu teléfono.', alertInvalidWPhone:'Por favor ingresa un número de teléfono válido.',
       alertWEmail:'Por favor ingresa un correo válido.', alertWType:'Por favor selecciona el tipo de pedido.',
       alertWDetails:'Por favor describe los detalles de tu pedido.',
@@ -834,7 +843,7 @@
       noticeDays:'Choisis parmi les prochains vendredis et samedis disponibles.',
       sectionNotes:'Notes', labelNotes:'Note supplémentaire (optionnelle)', notesPH:'Allergies, instructions spéciales...',
       submitBtn:'Commander', wholesaleBtn:'Commande en gros / Événements',
-      successTitle:'Commande reçue', successText:'Merci pour ta commande. On t\'a envoyé un courriel avec tous les détails.',
+      successTitle:'Commande reçue', successText:'Merci pour ta commande. Nous avons reçu tes détails et nous te contacterons bientôt pour confirmer.',
       paymentTitle:'Instructions de paiement',
       paymentInstructions:'Pour confirmer ta commande, effectue le paiement par <strong>Interac virement</strong> à:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Une fois le paiement confirmé, ta commande est réservée.',
       successNote:'Ta commande est confirmée une fois le paiement reçu.',
@@ -842,6 +851,7 @@
       wTitle:'En Gros / Événements', wSubtitle:'Dis-nous les détails et on te contacte pour coordonner.',
       wLabelName:'Nom complet', wLabelPhone:'Téléphone / WhatsApp', wLabelEmail:'Adresse courriel',
       wLabelType:'Type de commande', wOptDefault:'Choisis une option',
+      wOptBulk:'Commande en gros', wOptEvent:'Événement', wOptCorporate:'Corporatif / Bureau',
       wLabelDetails:'Détails de la commande', wDetailsPH:'Quantité approximative, date, lieu de livraison...',
       wSubmitBtn:'Envoyer la demande', wSuccessTitle:'Demande envoyée',
       wSuccessText:'Nous avons reçu ta demande. On te contactera bientôt pour coordonner.',
@@ -850,6 +860,10 @@
       alertEmail:'Veuillez entrer un courriel valide.', alertMenu:'Veuillez sélectionner une option du menu.',
       alertDelivery:'Veuillez sélectionner livraison ou ramassage.', alertAddress:'Veuillez entrer votre adresse.',
       alertDate:'Veuillez sélectionner un jour de livraison.', sending:'Envoi en cours...',
+      alertSendError:'Nous n’avons pas pu envoyer la commande. Réessaie ou écris-nous sur Instagram.',
+      alertCustomerConfirmationError:'Nous avons reçu ta commande, mais le courriel de confirmation n’a pas pu être envoyé. Nous te contacterons bientôt.',
+      alertWholesaleError:'Nous n’avons pas pu envoyer la demande. Réessaie ou écris-nous sur Instagram.',
+      alertEmailUnavailable:'Le système de courriel n’a pas chargé correctement. Recharge la page et réessaie.',
       alertWName:'Veuillez entrer votre nom.', alertInvalidWName:'Veuillez entrer un nom valide, sans chiffres.', alertWPhone:'Veuillez entrer votre téléphone.', alertInvalidWPhone:'Veuillez entrer un numéro de téléphone valide.',
       alertWEmail:'Veuillez entrer un courriel valide.', alertWType:'Veuillez sélectionner le type de commande.',
       alertWDetails:'Veuillez décrire les détails de votre commande.',
@@ -865,6 +879,13 @@
       year: 'numeric'
     });
     return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+
+  function formatDateValue(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
   }
 
   function populateDeliveryDates() {
@@ -895,7 +916,7 @@
     dates.forEach(date => {
       const label = formatDeliveryDate(date);
       const option = document.createElement('option');
-      option.value = label;
+      option.value = formatDateValue(date);
       option.textContent = label;
       select.appendChild(option);
     });
@@ -955,6 +976,9 @@
     document.getElementById('wLabelEmail').textContent = t.wLabelEmail;
     document.getElementById('wLabelType').textContent = t.wLabelType;
     document.getElementById('wOptDefault').textContent = t.wOptDefault;
+    document.getElementById('wOptBulk').textContent = t.wOptBulk;
+    document.getElementById('wOptEvent').textContent = t.wOptEvent;
+    document.getElementById('wOptCorporate').textContent = t.wOptCorporate;
     document.getElementById('wLabelDetails').textContent = t.wLabelDetails;
     document.getElementById('wDetails').placeholder = t.wDetailsPH;
     document.getElementById('wSubmitBtn').textContent = t.wSubmitBtn;
@@ -1025,6 +1049,7 @@
   function openWholesaleFromPrompt() {
     closeWholesalePrompt();
     openWholesale();
+    document.getElementById('wType').value = 'Pedido al mayor';
   }
 
   function selectDelivery(el, type) {
@@ -1033,6 +1058,7 @@
     el.classList.add('selected');
     el.querySelector('input').checked = true;
     document.getElementById('addressGroup').classList.toggle('visible', type === 'delivery');
+    clearFieldError('address');
 
   }
 
@@ -1061,14 +1087,28 @@
   function isValidEmail(value) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
   }
-  function submitOrder() {
+
+  function ensureEmailReady(t) {
+    if (!window.emailjs || typeof emailjs.send !== 'function') {
+      throw new Error(t.alertEmailUnavailable);
+    }
+  }
+
+  function showOrderSuccess() {
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successSection').classList.add('visible');
+  }
+
+  async function submitOrder() {
     const t = texts[currentLang];
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const email = document.getElementById('email').value.trim();
     const menuSelected = document.querySelector('.menu-card.selected input');
     const deliverySelected = document.querySelector('.delivery-card.selected input');
-    const deliveryDate = document.getElementById('deliveryDate').value;
+    const deliveryDateSelect = document.getElementById('deliveryDate');
+    const deliveryDate = deliveryDateSelect.value;
+    const deliveryDateLabel = deliveryDateSelect.options[deliveryDateSelect.selectedIndex]?.textContent || deliveryDate;
     const address = document.getElementById('address').value.trim();
     const notes = document.getElementById('notes').value.trim();
 
@@ -1097,64 +1137,50 @@
       name,
       phone,
       email,
-      business_email: 'tequechamosmtl@gmail.com',
+      business_email: BUSINESS_EMAIL,
       menu: menuVal,
       delivery: deliverySelected.value,
       address: deliveryType==='delivery' ? address : 'Pickup',
-      date: deliveryDate,
+      date: deliveryDateLabel,
+      date_value: deliveryDate,
       notes: notes||'—'
     };
 
-    const emails = [
-      { label: 'cliente', promise: emailjs.send('service_e7esjlr', 'template_0uqvj9g', params) },
-      { label: 'negocio', promise: emailjs.send('service_e7esjlr', 'template_cdrhe1h', params) }
-    ];
+    try {
+      ensureEmailReady(t);
+      await emailjs.send(EMAILJS_SERVICE_ID, BUSINESS_TEMPLATE_ID, params);
 
-    Promise.allSettled(emails.map(item => item.promise))
-    .then((results) => {
-      const failed = results
-        .map((result, index) => ({ label: emails[index].label, result }))
-        .filter(item => item.result.status === 'rejected');
-
-      if (failed.length === 0) {
-        document.getElementById('formSection').style.display = 'none';
-        document.getElementById('successSection').classList.add('visible');
-        btn.disabled = false; btn.textContent = t.submitBtn;
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, CUSTOMER_TEMPLATE_ID, params);
+      } catch (customerError) {
+        console.error('No se pudo enviar confirmación al cliente:', customerError);
+        showOrderSuccess();
+        alert(t.alertCustomerConfirmationError);
         return;
       }
 
-      console.error('EmailJS envío fallido:', failed.map(item => ({
-        correo: item.label,
-        error: item.result.reason
-      })));
-
-      const failedBusiness = failed.some(item => item.label === 'negocio');
-      const failedCustomer = failed.some(item => item.label === 'cliente');
-
-      if (failedBusiness && failedCustomer) {
-        alert('Hubo un problema al enviar el pedido. Revisa la configuración de los templates en EmailJS.');
-      } else if (failedBusiness) {
-        alert('El correo del cliente se envió, pero la notificación al negocio fallo. Revisa el template del negocio en EmailJS.');
-      } else {
-        document.getElementById('formSection').style.display = 'none';
-        document.getElementById('successSection').classList.add('visible');
-        alert('El pedido llegó al negocio, pero no pudimos enviar la confirmación al cliente.');
-      }
-
-      btn.disabled = false; btn.textContent = t.submitBtn;
-    });
+      showOrderSuccess();
+    } catch (error) {
+      console.error('No se pudo enviar el pedido al negocio:', error);
+      alert(error.message === t.alertEmailUnavailable ? t.alertEmailUnavailable : t.alertSendError);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = t.submitBtn;
+    }
   }
 
   function resetForm() {
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('successSection').classList.remove('visible');
     ['name','phone','email','notes','address'].forEach(id => document.getElementById(id).value = '');
+    ['name','phone','email','customQty','address','deliveryDate'].forEach(clearFieldError);
     document.getElementById('customQty').value = '1';
     document.getElementById('deliveryDate').value = '';
     document.querySelectorAll('.delivery-card').forEach(c => c.classList.remove('selected'));
     document.getElementById('menuCard').classList.remove('selected');
     document.getElementById('menuCard').classList.remove('expanded');
     document.getElementById('addressGroup').classList.remove('visible');
+    closeWholesalePrompt();
     updateMenuSummary();
     deliveryType = '';
   }
@@ -1168,6 +1194,7 @@
   function closeWholesale() {
     document.getElementById('wholesaleModal').classList.remove('visible');
     ['wName','wPhone','wEmail','wDetails'].forEach(id => document.getElementById(id).value = '');
+    ['wName','wPhone','wEmail','wType','wDetails'].forEach(clearFieldError);
     document.getElementById('wType').value = '';
     document.getElementById('wSuccess').classList.remove('visible');
     document.getElementById('wFormSection').style.display = 'block';
@@ -1177,7 +1204,7 @@
 
   setLang(currentLang);
 
-  function submitWholesale() {
+  async function submitWholesale() {
     const t = texts[currentLang];
     const name = document.getElementById('wName').value.trim();
     const phone = document.getElementById('wPhone').value.trim();
@@ -1198,15 +1225,30 @@
     const btn = document.getElementById('wSubmitBtn');
     btn.textContent = t.sending; btn.disabled = true;
 
-    emailjs.send('service_e7esjlr', 'template_cdrhe1h', { name, phone, email, menu:'PEDIDO AL MAYOR / EVENTO: '+type, delivery:'A coordinar', address:'A coordinar', date:'A coordinar', notes:details })
-    .then(() => {
+    const params = {
+      name,
+      phone,
+      email,
+      business_email: BUSINESS_EMAIL,
+      menu: 'PEDIDO AL MAYOR / EVENTO: ' + type,
+      delivery: 'A coordinar',
+      address: 'A coordinar',
+      date: 'A coordinar',
+      notes: details
+    };
+
+    try {
+      ensureEmailReady(t);
+      await emailjs.send(EMAILJS_SERVICE_ID, BUSINESS_TEMPLATE_ID, params);
       document.getElementById('wFormSection').style.display = 'none';
       document.getElementById('wSuccess').classList.add('visible');
-    })
-    .catch(() => {
-      alert('Hubo un problema al enviar. Por favor intenta de nuevo.');
-      btn.disabled = false; btn.textContent = t.wSubmitBtn;
-    });
+    } catch (error) {
+      console.error('No se pudo enviar la solicitud al mayor:', error);
+      alert(error.message === t.alertEmailUnavailable ? t.alertEmailUnavailable : t.alertWholesaleError);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = t.wSubmitBtn;
+    }
   }
 </script>
 </body>
