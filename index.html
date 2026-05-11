@@ -282,6 +282,15 @@
     font-weight: 800;
     padding: 10px 12px;
   }
+  .qty-max-note {
+    display: none;
+    margin-top: 10px;
+    font-size: 0.76rem;
+    color: var(--mid);
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .menu-card.expanded .qty-max-note { display: block; }
 
   #addressGroup { display:none; margin-top:12px; }
   #addressGroup.visible { display:block; }
@@ -532,6 +541,7 @@
               <input type="number" id="customQty" class="qty-input" min="1" max="50" step="1" value="1" inputmode="numeric" oninput="updateQtyFromInput()" onclick="event.stopPropagation()">
               <button type="button" class="qty-btn" onclick="changeQty(1, event)" aria-label="Más docenas">+</button>
             </div>
+            <div class="qty-max-note" id="qtyMaxNote">Para más de 50 docenas, usa la opción Pedido al mayor / Eventos.</div>
           </div>
         </div>
         <div class="notice" id="noticeMenu">Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.</div>
@@ -690,7 +700,8 @@
       menuQtySingular:'docena', menuQtyPlural:'docenas',
       menuTequenos:'tequeños', menuSauces:'salsas',
       alertCustomQty:'Por favor indica cuántas docenas necesitas.',
-      alertMaxQty:'Puedes pedir hasta 50 docenas por este formulario.',
+      alertMaxQty:'Puedes pedir hasta 50 docenas por este formulario. Para más cantidad, usa Pedido al mayor / Eventos.',
+      qtyMaxNote:'Para más de 50 docenas, usa la opción Pedido al mayor / Eventos.',
       noticeMenu:'Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.',
       sectionDelivery:'Entrega', deliveryName:'Delivery', deliveryDesc:'Te lo llevamos a domicilio',
       pickupName:'Pickup', pickupDesc:'Recógelo en punto acordado',
@@ -730,7 +741,8 @@
       menuQtySingular:'douzaine', menuQtyPlural:'douzaines',
       menuTequenos:'tequeños', menuSauces:'sauces',
       alertCustomQty:'Veuillez indiquer le nombre de douzaines souhaité.',
-      alertMaxQty:'Vous pouvez commander jusqu’à 50 douzaines avec ce formulaire.',
+      alertMaxQty:'Vous pouvez commander jusqu’à 50 douzaines avec ce formulaire. Pour une plus grande quantité, utilise Commande en gros / Événements.',
+      qtyMaxNote:'Pour plus de 50 douzaines, utilise l’option Commande en gros / Événements.',
       noticeMenu:'Sauces tartares incluses. Livrés réfrigérés, prêts à frire ou air fryer.',
       sectionDelivery:'Livraison', deliveryName:'Livraison', deliveryDesc:'On vous livre à domicile',
       pickupName:'Ramassage', pickupDesc:'Ramassez au point convenu',
@@ -825,6 +837,7 @@
     document.getElementById('sectionMenu').textContent = t.sectionMenu;
     document.getElementById('menuQtyTitle').textContent = t.menuQtyTitle;
     updateMenuSummary();
+    document.getElementById('qtyMaxNote').textContent = t.qtyMaxNote;
     document.getElementById('noticeMenu').textContent = t.noticeMenu;
     document.getElementById('sectionDelivery').textContent = t.sectionDelivery;
     document.getElementById('deliveryName').textContent = t.deliveryName;
