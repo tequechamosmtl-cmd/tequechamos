@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TequeChamos — Pedidos</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Karla:wght@400;500;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>if (window.emailjs) emailjs.init('474kEvdnpp4xNmagP');</script>
 <style>
@@ -30,7 +30,12 @@
 
   body {
     font-family: 'Karla', sans-serif;
-    background: var(--dark);
+    background:
+      radial-gradient(circle at 28% 18%, rgba(255,210,0,0.28), transparent 30%),
+      radial-gradient(circle at 75% 78%, rgba(255,124,0,0.34), transparent 34%),
+      linear-gradient(135deg, #A82000 0%, #D12A00 44%, #7E1300 100%);
+    background-size: 180% 180%;
+    animation: baseColorFlow 24s ease-in-out infinite alternate;
     color: var(--dark);
     min-height: 100vh;
     overflow-x: hidden;
@@ -39,126 +44,212 @@
   /* Animated blobs */
   .blob {
     position: fixed; border-radius: 50%;
-    filter: blur(90px); opacity: 0.9;
+    filter: blur(46px); opacity: 0.44;
     z-index: 0; will-change: transform;
+    mix-blend-mode: soft-light;
   }
-  .blob-1 { width:700px; height:700px; background:#FF4D00; top:-200px; left:-200px; animation:move1 18s ease-in-out infinite; }
-  .blob-2 { width:600px; height:600px; background:#FFD200; top:-100px; right:-150px; animation:move2 15s ease-in-out infinite; }
-  .blob-3 { width:500px; height:500px; background:#FF7A00; bottom:-150px; left:-100px; animation:move3 20s ease-in-out infinite; }
-  .blob-4 { width:550px; height:550px; background:#FF2D00; bottom:-100px; right:-150px; animation:move4 16s ease-in-out infinite; }
-  .blob-5 { width:450px; height:450px; background:#FFA800; top:35%; left:25%; animation:move5 22s ease-in-out infinite; }
-  .blob-6 { width:400px; height:400px; background:#FF6600; top:15%; right:5%; animation:move6 17s ease-in-out infinite; }
+  .blob-1 { width:620px; height:620px; background:#FF3B00; top:-190px; left:-190px; animation:bubble1 24s ease-in-out infinite; }
+  .blob-2 { width:520px; height:520px; background:#FFD200; top:-120px; right:-150px; animation:bubble2 22s ease-in-out infinite; }
+  .blob-3 { width:480px; height:480px; background:#FF6500; bottom:-160px; left:-110px; animation:bubble3 26s ease-in-out infinite; }
+  .blob-4 { width:500px; height:500px; background:#D72600; bottom:-120px; right:-150px; animation:bubble4 24s ease-in-out infinite; }
+  .blob-5 { width:400px; height:400px; background:#FF9D00; top:34%; left:18%; animation:bubble5 28s ease-in-out infinite; opacity:0.32; }
+  .blob-6 { width:360px; height:360px; background:#B91C00; top:12%; right:3%; animation:bubble6 26s ease-in-out infinite; opacity:0.34; }
 
-  @keyframes move1{0%{transform:translate(0,0) scale(1)}25%{transform:translate(100px,80px) scale(1.1)}50%{transform:translate(50px,160px) scale(0.95)}75%{transform:translate(-50px,90px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
-  @keyframes move2{0%{transform:translate(0,0) scale(1)}30%{transform:translate(-90px,110px) scale(1.05)}60%{transform:translate(-160px,50px) scale(0.9)}80%{transform:translate(-70px,180px) scale(1.1)}100%{transform:translate(0,0) scale(1)}}
-  @keyframes move3{0%{transform:translate(0,0) scale(1)}20%{transform:translate(90px,-110px) scale(1.08)}50%{transform:translate(180px,-70px) scale(0.95)}75%{transform:translate(70px,-180px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
-  @keyframes move4{0%{transform:translate(0,0) scale(1)}25%{transform:translate(-110px,-90px) scale(1.1)}55%{transform:translate(-50px,-180px) scale(0.92)}80%{transform:translate(-140px,-70px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
-  @keyframes move5{0%{transform:translate(0,0) scale(1)}33%{transform:translate(-90px,-130px) scale(1.15)}66%{transform:translate(110px,-70px) scale(0.88)}100%{transform:translate(0,0) scale(1)}}
-  @keyframes move6{0%{transform:translate(0,0) scale(1)}40%{transform:translate(-70px,130px) scale(1.1)}70%{transform:translate(50px,180px) scale(0.95)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes bubble1{0%{transform:translate(0,0) scale(1);border-radius:50%}25%{transform:translate(120px,105px) scale(1.18);border-radius:46% 54% 62% 38%}50%{transform:translate(42px,210px) scale(0.92);border-radius:58% 42% 45% 55%}75%{transform:translate(-70px,110px) scale(1.08);border-radius:42% 58% 52% 48%}100%{transform:translate(0,0) scale(1);border-radius:50%}}
+  @keyframes bubble2{0%{transform:translate(0,0) scale(1);border-radius:50%}30%{transform:translate(-120px,130px) scale(1.12);border-radius:55% 45% 40% 60%}60%{transform:translate(-190px,40px) scale(0.9);border-radius:43% 57% 62% 38%}80%{transform:translate(-80px,220px) scale(1.18);border-radius:60% 40% 46% 54%}100%{transform:translate(0,0) scale(1);border-radius:50%}}
+  @keyframes bubble3{0%{transform:translate(0,0) scale(1);border-radius:50%}20%{transform:translate(110px,-125px) scale(1.18);border-radius:45% 55% 58% 42%}50%{transform:translate(210px,-55px) scale(0.95);border-radius:61% 39% 43% 57%}75%{transform:translate(70px,-215px) scale(1.1);border-radius:42% 58% 55% 45%}100%{transform:translate(0,0) scale(1);border-radius:50%}}
+  @keyframes bubble4{0%{transform:translate(0,0) scale(1);border-radius:50%}25%{transform:translate(-140px,-100px) scale(1.16);border-radius:58% 42% 52% 48%}55%{transform:translate(-45px,-220px) scale(0.88);border-radius:44% 56% 38% 62%}80%{transform:translate(-175px,-80px) scale(1.08);border-radius:62% 38% 54% 46%}100%{transform:translate(0,0) scale(1);border-radius:50%}}
+  @keyframes bubble5{0%{transform:translate(0,0) scale(1);border-radius:50%}33%{transform:translate(-120px,-150px) scale(1.2);border-radius:40% 60% 48% 52%}66%{transform:translate(130px,-80px) scale(0.86);border-radius:58% 42% 62% 38%}100%{transform:translate(0,0) scale(1);border-radius:50%}}
+  @keyframes bubble6{0%{transform:translate(0,0) scale(1);border-radius:50%}40%{transform:translate(-85px,160px) scale(1.16);border-radius:56% 44% 42% 58%}70%{transform:translate(65px,205px) scale(0.9);border-radius:44% 56% 61% 39%}100%{transform:translate(0,0) scale(1);border-radius:50%}}
+
+  .rising-bubble {
+    position: fixed;
+    bottom: -90px;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 34% 28%, rgba(255,255,255,0.72), transparent 0 16%, transparent 34%),
+      radial-gradient(circle at 50% 55%, rgba(255,214,78,0.72), rgba(255,94,0,0.5) 52%, rgba(215,38,0,0.16) 78%);
+    border: 1px solid rgba(255,255,255,0.28);
+    box-shadow:
+      inset 0 0 20px rgba(255,255,255,0.22),
+      0 0 24px rgba(255,210,0,0.18);
+    filter: blur(0);
+    opacity: 0;
+    animation: riseBubble 16s linear infinite;
+  }
+  .rising-bubble.b1 { width: 66px; height: 66px; left: 8%; animation-duration: 18s; animation-delay: -2s; }
+  .rising-bubble.b2 { width: 42px; height: 42px; left: 24%; animation-duration: 15s; animation-delay: -6s; }
+  .rising-bubble.b3 { width: 78px; height: 78px; left: 42%; animation-duration: 20s; animation-delay: -4s; }
+  .rising-bubble.b4 { width: 50px; height: 50px; left: 64%; animation-duration: 16s; animation-delay: -8s; }
+  .rising-bubble.b5 { width: 68px; height: 68px; left: 82%; animation-duration: 19s; animation-delay: -1s; }
+  .rising-bubble.b6 { width: 34px; height: 34px; left: 14%; animation-duration: 14s; animation-delay: -7s; }
+  .rising-bubble.b7 { width: 56px; height: 56px; left: 73%; animation-duration: 17s; animation-delay: -5s; }
+  .rising-bubble.b8 { width: 44px; height: 44px; left: 52%; animation-duration: 15s; animation-delay: -9s; }
+
+  @keyframes riseBubble {
+    0% {
+      transform: translate3d(0, 0, 0) scale(0.72);
+      opacity: 0;
+      background-color: rgba(215,38,0,0.1);
+    }
+    12% { opacity: 0.42; }
+    42% {
+      transform: translate3d(22px, -42vh, 0) scale(1);
+      background-color: rgba(255,119,0,0.28);
+    }
+    70% {
+      opacity: 0.34;
+      transform: translate3d(-18px, -72vh, 0) scale(1.14);
+      background-color: rgba(255,210,0,0.26);
+    }
+    100% {
+      transform: translate3d(14px, -108vh, 0) scale(1.28);
+      opacity: 0;
+      background-color: rgba(255,210,0,0.04);
+    }
+  }
 
   /* Grain */
+  body::before {
+    content:''; position:fixed; inset:-20%;
+    background:
+      radial-gradient(circle at 15% 70%, rgba(255,210,0,0.18) 0 8%, transparent 18%),
+      radial-gradient(circle at 72% 35%, rgba(255,77,0,0.22) 0 10%, transparent 22%),
+      radial-gradient(circle at 55% 95%, rgba(215,38,0,0.28) 0 12%, transparent 26%);
+    filter: blur(18px);
+    opacity: 0.56;
+    pointer-events:none; z-index:0;
+    animation: heatDrift 19s ease-in-out infinite alternate;
+  }
+
   body::after {
     content:''; position:fixed; inset:0;
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
     pointer-events:none; z-index:1; opacity:0.5;
   }
 
+  @keyframes baseColorFlow{0%{background-position:0% 45%}50%{background-position:80% 30%}100%{background-position:100% 70%}}
+  @keyframes heatDrift{from{transform:translate3d(-3%,2%,0) rotate(-2deg) scale(1)}to{transform:translate3d(3%,-2%,0) rotate(2deg) scale(1.08)}}
+
   /* Layout */
   .page {
     position: relative; z-index: 2;
-    max-width: 600px; margin: 0 auto;
+    max-width: 640px; margin: 0 auto;
     min-height: 100vh;
   }
 
   /* Hero header */
   .hero {
-    background: var(--orange);
-    padding: 40px 32px 48px;
+    background: transparent;
+    padding: 28px 28px 22px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .hero::before {
-    content: '';
-    position: absolute;
-    bottom: -30px; left: 0; right: 0;
-    height: 60px;
-    background: var(--offwhite);
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-    z-index: 1;
+    content: none;
   }
 
   .hero-inner { position: relative; z-index: 2; }
 
   .hero-top {
     display: flex; align-items: center;
-    justify-content: space-between; margin-bottom: 24px;
+    justify-content: space-between; margin-bottom: 16px;
+    gap: 16px;
   }
 
   .logo {
-    font-family: 'Talina', 'Fraunces', serif;
-    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    font-family: 'Press Start 2P', 'Talina', 'Fraunces', serif;
+    font-size: clamp(1.35rem, 4.8vw, 2.05rem);
     font-weight: 900;
     color: var(--yellow);
-    letter-spacing: 3px;
-    line-height: 1;
-    text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+    letter-spacing: 0;
+    line-height: 1.22;
+    text-shadow: 0 4px 18px rgba(26,8,0,0.28), 2px 2px 0 rgba(0,0,0,0.16);
+    animation: logoFloat 4.8s ease-in-out infinite;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .pixel-logo {
+    width: 58px;
+    height: auto;
+    display: inline-block;
+    flex: 0 0 auto;
+    transform: rotate(-14deg);
+    image-rendering: pixelated;
+    filter: drop-shadow(3px 5px 0 rgba(26,8,0,0.24));
   }
 
   .lang-toggle {
     display: flex;
-    background: rgba(0,0,0,0.2);
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.22);
     border-radius: 50px;
     padding: 3px;
     gap: 2px;
+    box-shadow: 0 10px 24px rgba(26,8,0,0.16);
+    backdrop-filter: blur(6px);
   }
   .lang-btn {
     font-family: 'Karla', sans-serif;
-    font-size: 0.72rem; font-weight: 700;
+    font-size: 0.72rem; font-weight: 800;
     padding: 6px 14px; border: none; cursor: pointer;
     background: transparent; color: rgba(255,255,255,0.7);
-    letter-spacing: 1px; text-transform: uppercase;
+    letter-spacing: 0.4px; text-transform: uppercase;
     border-radius: 50px; transition: all 0.2s;
   }
-  .lang-btn.active { background: var(--yellow); color: var(--dark); }
-  .lang-btn:not(.active):hover { color: white; }
+  .lang-btn.active { background: var(--yellow); color: var(--dark); box-shadow: 0 5px 14px rgba(26,8,0,0.16); }
+  .lang-btn:not(.active):hover { color: white; background: rgba(255,255,255,0.1); }
 
   .hero-tagline {
-    font-size: 0.9rem; font-weight: 600;
-    color: rgba(255,255,255,0.85);
+    font-size: 0.92rem; font-weight: 700;
+    color: rgba(255,255,255,0.92);
     letter-spacing: 0.5px;
+    line-height: 1.45;
+    text-shadow: 0 2px 10px rgba(26,8,0,0.35);
   }
 
   .hero-badge {
     display: inline-block;
-    background: var(--yellow);
+    background: rgba(255,210,0,0.92);
     color: var(--dark);
-    font-size: 0.72rem; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    padding: 5px 14px; border-radius: 50px;
+    font-size: 0.72rem; font-weight: 900;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 50px;
     margin-bottom: 12px;
+    box-shadow: 0 8px 20px rgba(26,8,0,0.16);
   }
 
   /* Content area */
   .content {
-    background: var(--offwhite);
-    padding: 48px 28px 80px;
+    background: transparent;
+    padding: 18px 22px 72px;
+  }
+
+  #formSection {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
   }
 
   /* Section */
-  .section { margin-bottom: 40px; }
+  .section { margin-bottom: 0; }
 
   .section-header {
     display: flex; align-items: center; gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   .section-num {
-    width: 28px; height: 28px;
+    width: 30px; height: 30px;
     background: var(--orange);
     color: white;
     font-family: 'Talina', 'Fraunces', serif;
-    font-size: 0.85rem; font-weight: 700;
+    font-size: 0.88rem; font-weight: 900;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -166,7 +257,7 @@
 
   .section-title {
     font-family: 'Talina', 'Fraunces', serif;
-    font-size: 1.1rem; font-weight: 700;
+    font-size: 1.18rem; font-weight: 900;
     color: var(--dark); letter-spacing: 0.3px;
   }
 
@@ -177,61 +268,120 @@
   }
 
   /* Form fields */
-  .form-group { margin-bottom: 14px; }
+  .form-group { margin-bottom: 16px; }
 
   label {
     display: block; font-size: 0.82rem;
     font-weight: 700; color: var(--mid);
-    margin-bottom: 6px; letter-spacing: 0.3px;
-    text-transform: uppercase; font-size: 0.72rem;
+    margin-bottom: 7px; letter-spacing: 0.4px;
+    text-transform: uppercase; font-size: 0.7rem;
   }
 
   input, select, textarea {
-    width: 100%; padding: 13px 16px;
-    background: white;
-    border: 2px solid #EEE;
-    border-radius: 10px;
+    width: 100%; padding: 14px 15px;
+    background: rgba(255,255,255,0.94);
+    border: 1.5px solid rgba(255,179,71,0.45);
+    border-radius: 12px;
     font-family: 'Karla', sans-serif;
     font-size: 0.97rem; font-weight: 600;
-    color: var(--dark); transition: all 0.2s;
+    color: var(--dark); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s, background 0.2s;
     outline: none; appearance: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    box-shadow: 0 8px 20px rgba(26,8,0,0.05);
   }
   input:focus, select:focus, textarea:focus {
     border-color: var(--orange);
-    box-shadow: 0 0 0 3px rgba(255,77,0,0.12);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255,77,0,0.12), 0 12px 26px rgba(26,8,0,0.08);
+    transform: translateY(-1px);
   }
   input.field-invalid, select.field-invalid, textarea.field-invalid {
     border-color: #D72600;
     box-shadow: 0 0 0 3px rgba(215,38,0,0.14);
   }
-  input::placeholder, textarea::placeholder { color: #CCC; font-weight: 500; }
-  textarea { resize: vertical; min-height: 80px; }
+  .field-error-message {
+    display: none;
+    margin-top: 7px;
+    color: #9F2100;
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.35;
+  }
+  .field-error-message.visible {
+    display: block;
+    animation: contentRise 0.25s ease both;
+  }
+  input::placeholder, textarea::placeholder { color: #CFAE8C; font-weight: 600; }
+  textarea { resize: vertical; min-height: 88px; }
 
   /* Menu cards */
-  .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .menu-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
   .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .date-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+  .date-card {
+    border: 1.5px solid rgba(255,179,71,0.45);
+    border-radius: 15px;
+    background: rgba(255,255,255,0.94);
+    padding: 12px 8px;
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Karla', sans-serif;
+    color: var(--dark);
+    box-shadow: 0 10px 24px rgba(26,8,0,0.07);
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .date-card:hover {
+    border-color: var(--orange);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(255,77,0,0.14);
+  }
+  .date-card.selected {
+    border-color: var(--orange);
+    background: linear-gradient(135deg, #FFF8EE, #FFF0D0);
+    box-shadow: 0 16px 34px rgba(255,77,0,0.18);
+  }
+  .date-day {
+    display: block;
+    color: var(--orange);
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+    margin-bottom: 5px;
+  }
+  .date-main {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+  .date-month {
+    display: block;
+    color: var(--mid);
+    font-size: 0.72rem;
+    font-weight: 800;
+    margin-top: 2px;
+  }
 
   .menu-card, .delivery-card {
-    border: 2px solid #EEE;
-    border-radius: 14px; padding: 18px 16px;
+    border: 1.5px solid rgba(255,179,71,0.45);
+    border-radius: 16px; padding: 18px 16px;
     cursor: pointer; transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
-    background: white; position: relative;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    background: rgba(255,255,255,0.94); position: relative;
+    box-shadow: 0 10px 24px rgba(26,8,0,0.07);
   }
   .menu-card input[type="radio"],
   .delivery-card input[type="radio"] { position:absolute; opacity:0; width:0; height:0; }
 
   .menu-card:hover, .delivery-card:hover {
     border-color: var(--orange);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(255,77,0,0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(255,77,0,0.16);
   }
   .menu-card.selected, .delivery-card.selected {
     border-color: var(--orange);
     background: linear-gradient(135deg, #FFF8EE, #FFF0D0);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(255,77,0,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 34px rgba(255,77,0,0.18);
   }
   .menu-card.selected::after, .delivery-card.selected::after {
     content: '';
@@ -251,21 +401,22 @@
     color: var(--orange);
   }
   .menu-note, .delivery-desc {
-    font-size: 0.78rem; color: #999;
+    font-size: 0.78rem; color: #9D6B3B;
     margin-top: 6px; font-weight: 600;
+    line-height: 1.35;
   }
 
   .qty-controls {
     display: none;
     align-items: center;
     gap: 10px;
-    margin-top: 16px;
+    margin-top: 18px;
   }
   .menu-card.expanded .qty-controls { display: flex; }
   .qty-btn {
-    width: 42px; height: 42px;
-    border: 2px solid var(--border);
-    border-radius: 12px;
+    width: 44px; height: 44px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
     background: white;
     color: var(--orange);
     font-family: 'Karla', sans-serif;
@@ -275,7 +426,7 @@
     transition: all 0.2s;
     flex-shrink: 0;
   }
-  .qty-btn:hover { border-color: var(--orange); background: #FFF8EE; }
+  .qty-btn:hover { border-color: var(--orange); background: #FFF8EE; transform: translateY(-1px); }
   .qty-input {
     text-align: center;
     font-size: 1.15rem;
@@ -334,9 +485,9 @@
     border-radius: 12px;
     padding: 12px 14px;
     font-family: 'Karla', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 1px;
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.25px;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.2s;
@@ -356,51 +507,273 @@
   #addressGroup { display:none; margin-top:12px; }
   #addressGroup.visible { display:block; }
 
+  /* Step-by-step order flow */
+  .order-progress {
+    padding: 0 4px 20px;
+    margin: 0 auto 16px;
+  }
+  .quick-summary {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    max-width: 480px;
+    margin: 0 auto 12px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 14px;
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 900;
+    line-height: 1.35;
+    box-shadow: 0 10px 24px rgba(26,8,0,0.12);
+    backdrop-filter: blur(6px);
+  }
+  .quick-summary.visible { display: flex; animation: contentRise 0.28s ease both; }
+  .quick-summary-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--yellow);
+    box-shadow: 0 0 0 4px rgba(255,210,0,0.18);
+    flex: 0 0 auto;
+  }
+  .progress-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 17px;
+  }
+  .progress-step {
+    color: var(--white);
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(26,8,0,0.35);
+  }
+  .progress-title {
+    color: var(--yellow);
+    font-family: 'Talina', 'Fraunces', serif;
+    font-size: 1.02rem;
+    font-weight: 900;
+    text-align: right;
+    text-shadow: 0 2px 8px rgba(26,8,0,0.35);
+  }
+  .progress-track {
+    height: 8px;
+    margin: 0 14px;
+    background: rgba(255,255,255,0.46);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-track::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -90%;
+    width: 70%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent);
+    animation: progressGlow 4.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    pointer-events: none;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 16.66%;
+    background: linear-gradient(90deg, var(--orange), var(--yellow));
+    border-radius: inherit;
+    transition: width 0.28s ease;
+  }
+  .progress-dots {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: -20px;
+    position: relative;
+    z-index: 2;
+  }
+  .progress-dot {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--offwhite);
+    border: 3px solid rgba(255,255,255,0.9);
+    color: var(--mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 900;
+    box-shadow: 0 8px 20px rgba(26,8,0,0.22);
+    transition: transform 0.24s ease, background 0.24s ease, color 0.24s ease, border-color 0.24s ease;
+  }
+  .progress-dot.active {
+    background: var(--orange);
+    color: white;
+    border-color: var(--yellow);
+    transform: translateY(-2px);
+    animation: checkpointPop 0.32s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .order-step {
+    display: none;
+    min-height: 310px;
+    margin-bottom: 0;
+    background: linear-gradient(180deg, rgba(255,250,243,0.94), rgba(255,244,226,0.9));
+    border: 1px solid rgba(255,255,255,0.72);
+    border-radius: 22px;
+    padding: 26px 22px 24px;
+    box-shadow: 0 16px 36px rgba(26,8,0,0.2), inset 0 1px 0 rgba(255,255,255,0.8);
+    animation: stepIn 0.42s cubic-bezier(.2,.8,.2,1) both;
+    backdrop-filter: blur(6px);
+    position: relative;
+    overflow: hidden;
+  }
+  .order-step::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 5px;
+    background: linear-gradient(90deg, var(--orange), var(--yellow), var(--orange));
+    border-radius: 0 0 999px 999px;
+  }
+  .order-step.active { display: block; }
+  .order-step.active .section-header,
+  .order-step.active .step-copy,
+  .order-step.active .form-group,
+  .order-step.active .menu-grid,
+  .order-step.active .delivery-grid,
+  .order-step.active .notice,
+  .order-step.active .summary-card {
+    animation: contentRise 0.42s ease both;
+  }
+  .order-step.active .step-copy { animation-delay: 0.04s; }
+  .order-step.active .form-group,
+  .order-step.active .menu-grid,
+  .order-step.active .delivery-grid { animation-delay: 0.08s; }
+  .order-step.active .notice,
+  .order-step.active .summary-card { animation-delay: 0.12s; }
+  .step-copy {
+    color: var(--mid);
+    font-size: 0.91rem;
+    font-weight: 650;
+    line-height: 1.58;
+    margin: -6px 0 20px;
+  }
+  .wizard-actions {
+    display: grid;
+    grid-template-columns: 0.7fr 1fr;
+    gap: 11px;
+    margin: 16px 0 0;
+  }
+  .wizard-actions.first-step { grid-template-columns: 1fr; }
+  .back-btn {
+    width: 100%;
+    padding: 16px;
+    background: rgba(255,255,255,0.9);
+    color: var(--mid);
+    font-family: 'Karla', sans-serif;
+    font-size: 0.86rem;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    border: 1.5px solid rgba(255,179,71,0.72);
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(26,8,0,0.06);
+    transition: transform 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .back-btn:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-2px); box-shadow: 0 14px 28px rgba(26,8,0,0.1); }
+  .back-btn:active { transform: translateY(1px); }
+  .summary-card {
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid rgba(255,179,71,0.6);
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .summary-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #FFE1BA;
+    color: var(--dark);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .summary-row:last-child { border-bottom: 0; }
+  .summary-label {
+    color: var(--mid);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+  }
+
   /* Notice */
   .notice {
-    margin-top: 12px; padding: 13px 16px;
-    background: #FFF8EE;
+    margin-top: 14px; padding: 13px 16px;
+    background: rgba(255,248,238,0.82);
     border-left: 3px solid var(--orange);
     font-size: 0.84rem; color: var(--mid);
     font-weight: 600; line-height: 1.5;
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 12px 12px 0;
   }
 
   /* Buttons */
   .submit-btn {
-    width: 100%; padding: 18px;
-    background: var(--orange);
+    width: 100%; padding: 17px 18px;
+    background: linear-gradient(135deg, #FF4D00, #E53200);
     color: white; font-family: 'Karla', sans-serif;
-    font-size: 0.9rem; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    border: none; border-radius: 14px; cursor: pointer;
+    font-size: 0.92rem; font-weight: 900;
+    letter-spacing: 0.35px; text-transform: uppercase;
+    border: none; border-radius: 16px; cursor: pointer;
     transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
-    box-shadow: 0 6px 20px rgba(255,77,0,0.35);
+    box-shadow: 0 12px 28px rgba(255,77,0,0.34);
     position: relative; overflow: hidden;
   }
   .submit-btn::after {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(255,210,0,0.3), transparent);
-    opacity: 0; transition: opacity 0.2s;
+    background: linear-gradient(135deg, rgba(255,210,0,0.32), transparent 60%);
+    opacity: 0; transition: opacity 0.22s;
   }
-  .submit-btn:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(255,77,0,0.45); }
+  .submit-btn:hover { transform:translateY(-3px); box-shadow:0 16px 34px rgba(255,77,0,0.44); }
   .submit-btn:hover::after { opacity: 1; }
   .submit-btn:active { transform:translateY(1px); box-shadow:0 3px 10px rgba(255,77,0,0.3); }
   .submit-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
   .wholesale-btn {
-    width: 100%; padding: 16px; margin-top: 12px;
-    background: transparent; color: var(--orange);
+    width: 100%; padding: 15px 16px; margin-top: 12px;
+    background: rgba(255,255,255,0.86); color: var(--orange);
     font-family: 'Karla', sans-serif; font-size: 0.85rem;
-    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-    border: 2px solid var(--orange); border-radius: 14px;
+    font-weight: 900; letter-spacing: 0.35px; text-transform: uppercase;
+    border: 1.5px solid rgba(255,77,0,0.75); border-radius: 16px;
     cursor: pointer; transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 10px 24px rgba(26,8,0,0.08);
   }
   .wholesale-btn:hover { background: var(--orange); color: white; transform:translateY(-2px); box-shadow:0 8px 20px rgba(255,77,0,0.3); }
 
   /* Success */
-  .success { display:none; text-align:center; padding:60px 20px; }
+  .success {
+    display:none;
+    text-align:center;
+    padding:34px 22px;
+    max-width: 470px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, rgba(255,250,243,0.96), rgba(255,244,226,0.92));
+    border: 1px solid rgba(255,255,255,0.72);
+    border-radius: 22px;
+    box-shadow: 0 16px 36px rgba(26,8,0,0.2);
+    backdrop-filter: blur(6px);
+  }
   .success.visible { display:block; }
 
   .success-icon {
@@ -439,10 +812,95 @@
     color: var(--mid); line-height: 1.6;
   }
   .payment-box strong { color: var(--orange); }
+  .success-actions {
+    display: grid;
+    gap: 10px;
+    max-width: 380px;
+    margin: 18px auto 0;
+  }
+  .success-actions .new-order-btn { margin-top: 0; }
+  .copy-btn {
+    font-family:'Karla',sans-serif;
+    font-size:0.8rem;
+    font-weight:900;
+    letter-spacing:0.3px;
+    text-transform:uppercase;
+    padding:12px 18px;
+    border:1.5px solid rgba(255,77,0,0.75);
+    border-radius:16px;
+    background:rgba(255,255,255,0.9);
+    color:var(--orange);
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .copy-btn:hover { background:var(--orange); color:white; transform:translateY(-2px); }
+
+  .payment-helper {
+    display: grid;
+    gap: 14px;
+  }
+  .payment-email {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid rgba(255,179,71,0.6);
+    border-radius: 16px;
+    padding: 14px;
+    color: var(--mid);
+    font-size: 0.82rem;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+  .payment-email strong {
+    display: block;
+    color: var(--orange);
+    font-size: 0.94rem;
+    margin-top: 3px;
+    word-break: break-word;
+  }
+  .payment-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .payment-confirm {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(255,255,255,0.82);
+    border: 1.5px solid rgba(255,179,71,0.45);
+    border-radius: 16px;
+    padding: 13px 14px;
+    color: var(--mid);
+    font-size: 0.82rem;
+    font-weight: 850;
+    line-height: 1.35;
+    cursor: pointer;
+  }
+  .payment-confirm input {
+    appearance: auto;
+    -webkit-appearance: checkbox;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    margin-top: 1px;
+    accent-color: var(--orange);
+    cursor: pointer;
+  }
+  .payment-confirm:has(input:checked) {
+    background: rgba(255, 247, 232, 0.95);
+    border-color: rgba(255, 122, 24, 0.82);
+    box-shadow: 0 10px 24px rgba(152, 65, 15, 0.14);
+  }
+  .payment-note {
+    margin-top: 0;
+  }
 
   .new-order-btn {
-    font-family:'Karla',sans-serif; font-size:0.78rem; font-weight:700;
-    letter-spacing:2px; text-transform:uppercase; padding:12px 28px;
+    font-family:'Karla',sans-serif; font-size:0.8rem; font-weight:900;
+    letter-spacing:0.3px; text-transform:uppercase; padding:12px 28px;
     border:2px solid var(--orange); border-radius:50px;
     background:transparent; color:var(--orange); cursor:pointer;
     transition:all 0.2s; margin-top: 20px;
@@ -507,18 +965,51 @@
   .footer-bulk { margin-top:6px; color:rgba(255,255,255,0.3); font-size:0.72rem; }
 
   @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  .section { animation:fadeUp 0.6s ease both; }
-  .section:nth-child(1){animation-delay:0.05s}
-  .section:nth-child(2){animation-delay:0.1s}
-  .section:nth-child(3){animation-delay:0.15s}
-  .section:nth-child(4){animation-delay:0.2s}
-  .section:nth-child(5){animation-delay:0.25s}
+  @keyframes stepIn{from{opacity:0;transform:translateY(18px) scale(0.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes contentRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes checkpointPop{0%{transform:translateY(0) scale(0.92)}70%{transform:translateY(-3px) scale(1.06)}100%{transform:translateY(-2px) scale(1)}}
+  @keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-6px) rotate(-0.6deg)}}
+  @keyframes progressGlow{0%{transform:translateX(0);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateX(280%);opacity:0}}
+  .section { animation:fadeUp 0.36s ease both; }
 
   @media(max-width:480px){
+    body{animation-duration:32s;}
+    body::before{display:none;}
+    .blob{display:none;}
     .menu-grid,.delivery-grid{grid-template-columns:1fr;}
-    .content{padding:40px 20px 60px;}
-    .hero{padding:30px 20px 44px;}
+    .date-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+    .content{padding:14px 16px 58px;}
+    .hero{padding:24px 20px 22px;}
+    .logo{font-size:clamp(1.22rem, 6.6vw, 1.62rem);}
+    .pixel-logo{width:50px;}
+    .hero-tagline{font-size:0.86rem;}
+    .hero-top{
+      align-items:flex-start;
+      flex-direction:column;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .lang-toggle{align-self:flex-start;}
     .modal-body{padding:24px 20px 20px;}
+    .wizard-actions{grid-template-columns:1fr;}
+    .wizard-actions .submit-btn{order:1;}
+    .wizard-actions .back-btn{order:2;}
+    .summary-row{grid-template-columns:1fr; gap:4px;}
+    .payment-actions{grid-template-columns:1fr;}
+    .progress-meta{align-items:flex-start; flex-direction:column;}
+    .progress-title{text-align:left;}
+    .order-step{min-height:286px; padding:24px 18px 20px; border-radius:20px;}
+    .section-header{margin-bottom:16px;}
+    .step-copy{font-size:0.88rem; margin-bottom:18px;}
+    input, select, textarea{font-size:0.96rem;}
+    .footer{padding:22px 18px;}
+    .lang-toggle,.quick-summary,.order-step,.success{backdrop-filter:none;}
+    .rising-bubble{animation-duration:18s;}
+    .rising-bubble.b3,.rising-bubble.b5,.rising-bubble.b6,.rising-bubble.b8{display:none;}
+    .rising-bubble.b1{width:54px;height:54px;left:4%;}
+    .rising-bubble.b2{width:34px;height:34px;left:30%;}
+    .rising-bubble.b4{width:42px;height:42px;left:68%;}
+    .rising-bubble.b7{width:48px;height:48px;left:82%;}
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -540,6 +1031,14 @@
 <div class="blob blob-4"></div>
 <div class="blob blob-5"></div>
 <div class="blob blob-6"></div>
+<div class="rising-bubble b1"></div>
+<div class="rising-bubble b2"></div>
+<div class="rising-bubble b3"></div>
+<div class="rising-bubble b4"></div>
+<div class="rising-bubble b5"></div>
+<div class="rising-bubble b6"></div>
+<div class="rising-bubble b7"></div>
+<div class="rising-bubble b8"></div>
 
 <div class="page">
 
@@ -547,7 +1046,7 @@
   <div class="hero">
     <div class="hero-inner">
       <div class="hero-top">
-        <div class="logo">TequeChamos</div>
+        <div class="logo">TequeWeb<img class="pixel-logo" src="assets/tequeno-logo.png" alt="" aria-hidden="true"></div>
         <div class="lang-toggle">
           <button class="lang-btn active" onclick="setLang('es')">ES</button>
           <button class="lang-btn" onclick="setLang('fr')">FR</button>
@@ -563,34 +1062,41 @@
 
     <div id="formSection">
 
-      <!-- 1. Datos -->
-      <div class="section">
+      <div class="order-progress" aria-live="polite">
+        <div class="progress-meta">
+          <div class="progress-step" id="stepCounter">Paso 1 de 7</div>
+          <div class="progress-title" id="progressTitle">Tu nombre</div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-dots" id="progressDots" aria-hidden="true"></div>
+      </div>
+      <div class="quick-summary" id="quickSummary">
+        <span class="quick-summary-dot"></span>
+        <span id="quickSummaryText">1 docena · $20</span>
+      </div>
+
+      <!-- 1. Nombre -->
+      <div class="section order-step active" data-step="1">
         <div class="section-header">
           <div class="section-num">1</div>
           <div class="section-title" id="sectionPersonal">Tus datos</div>
         </div>
+        <p class="step-copy" id="copyName">Empecemos por lo más fácil. Así sabemos a nombre de quién va el pedido.</p>
         <div class="form-group">
           <label id="labelName">Nombre completo</label>
           <input type="text" id="name" placeholder="Tu nombre completo" autocomplete="name" minlength="2" required>
         </div>
-        <div class="form-group">
-          <label id="labelPhone">Teléfono</label>
-          <input type="tel" id="phone" placeholder="+1 514 000 0000" autocomplete="tel" inputmode="tel" required>
-        </div>
-        <div class="form-group">
-          <label id="labelEmail">Correo electrónico</label>
-          <input type="email" id="email" placeholder="tucorreo@email.com" autocomplete="email" required>
-        </div>
       </div>
 
-      <div class="divider"></div>
-
       <!-- 2. Pedido -->
-      <div class="section">
+      <div class="section order-step" data-step="2">
         <div class="section-header">
           <div class="section-num">2</div>
           <div class="section-title" id="sectionMenu">Tu pedido</div>
         </div>
+        <p class="step-copy" id="copyMenu">Elige cuántas docenas quieres. Puedes ajustar la cantidad antes de confirmar.</p>
         <div class="menu-grid">
           <div class="menu-card" id="menuCard" onclick="selectMenu()">
             <input type="hidden" name="menu" id="menuSelected" value="1">
@@ -608,14 +1114,34 @@
         <div class="notice" id="noticeMenu">Incluye salsas tártaras. Vienen refrigerados, listos para freír o air fryer.</div>
       </div>
 
-      <div class="divider"></div>
-
-      <!-- 3. Entrega -->
-      <div class="section">
+      <!-- 3. Fecha -->
+      <div class="section order-step" data-step="3">
         <div class="section-header">
           <div class="section-num">3</div>
+          <div class="section-title" id="sectionDate">Día de entrega</div>
+        </div>
+        <p class="step-copy" id="copyDate">Selecciona el día que te queda mejor entre las fechas disponibles.</p>
+        <div class="form-group">
+          <label id="labelDate">Cuándo prefieres recibir tu pedido</label>
+          <select id="deliveryDate" required hidden>
+            <option value="" id="optDefault">Selecciona una fecha</option>
+          </select>
+          <div class="date-grid" id="dateGrid"></div>
+        </div>
+        <div class="form-group">
+          <label id="labelTime">Hora preferida</label>
+          <input type="time" id="deliveryTime" min="09:00" max="22:00" required>
+        </div>
+        <div class="notice" id="noticeDays">Elige entre los próximos viernes y sábados disponibles.</div>
+      </div>
+
+      <!-- 4. Entrega -->
+      <div class="section order-step" data-step="4">
+        <div class="section-header">
+          <div class="section-num">4</div>
           <div class="section-title" id="sectionDelivery">Entrega</div>
         </div>
+        <p class="step-copy" id="copyDelivery">Dinos si prefieres delivery o pickup. Si es delivery, agrega tu dirección.</p>
         <div class="delivery-grid">
           <label class="delivery-card" onclick="selectDelivery(this, 'delivery')">
             <input type="radio" name="delivery" value="Delivery">
@@ -628,6 +1154,7 @@
             <div class="delivery-desc" id="pickupDesc">Recógelo en punto acordado</div>
           </label>
         </div>
+        <div class="field-error-message" id="deliveryError"></div>
         <div id="addressGroup">
           <div class="form-group" style="margin-top:14px;">
             <label id="labelAddress">Tu dirección</label>
@@ -637,38 +1164,66 @@
         </div>
       </div>
 
-      <div class="divider"></div>
-
-      <!-- 4. Fecha -->
-      <div class="section">
-        <div class="section-header">
-          <div class="section-num">4</div>
-          <div class="section-title" id="sectionDate">Día de entrega</div>
-        </div>
-        <div class="form-group">
-          <label id="labelDate">Cuándo prefieres recibir tu pedido</label>
-          <select id="deliveryDate" required>
-            <option value="" id="optDefault">Selecciona una fecha</option>
-          </select>
-        </div>
-        <div class="notice" id="noticeDays">Elige entre los próximos viernes y sábados disponibles.</div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- 5. Notas -->
-      <div class="section">
+      <!-- 5. Contacto -->
+      <div class="section order-step" data-step="5">
         <div class="section-header">
           <div class="section-num">5</div>
+          <div class="section-title" id="sectionContact">Contacto</div>
+        </div>
+        <p class="step-copy" id="copyContact">Déjanos tu WhatsApp o teléfono y tu correo para confirmar el pedido.</p>
+        <div class="form-group">
+          <label id="labelPhone">Teléfono</label>
+          <input type="tel" id="phone" placeholder="+1 514 000 0000" autocomplete="tel" inputmode="tel" required>
+        </div>
+        <div class="form-group">
+          <label id="labelEmail">Correo electrónico</label>
+          <input type="email" id="email" placeholder="tucorreo@email.com" autocomplete="email" required>
+        </div>
+      </div>
+
+      <!-- 6. Confirmación -->
+      <div class="section order-step" data-step="6">
+        <div class="section-header">
+          <div class="section-num">6</div>
           <div class="section-title" id="sectionNotes">Notas</div>
         </div>
+        <p class="step-copy" id="copyNotes">Agrega cualquier detalle especial y revisa el resumen antes de enviar.</p>
         <div class="form-group">
           <label id="labelNotes">Nota adicional (opcional)</label>
           <textarea id="notes" placeholder="Alergias, instrucciones especiales..."></textarea>
         </div>
+        <div class="summary-card" id="orderSummary"></div>
       </div>
 
-      <button class="submit-btn" onclick="submitOrder()" id="submitBtn">Hacer pedido</button>
+      <!-- 7. Pago -->
+      <div class="section order-step" data-step="7">
+        <div class="section-header">
+          <div class="section-num">7</div>
+          <div class="section-title" id="sectionPayment">Pago</div>
+        </div>
+        <p class="step-copy" id="copyPayment">Antes de enviarlo: tu pedido llegará como pendiente de pago. Para completarlo, falta hacer el Interac.</p>
+        <div class="payment-helper">
+          <div class="payment-email">
+            <span id="paymentEmailLabel">Email para Interac <strong>tequechamosmtl@gmail.com</strong></span>
+          </div>
+          <div class="payment-actions">
+            <button class="copy-btn" type="button" onclick="copyPaymentEmail('copyPaymentStepBtn')" id="copyPaymentStepBtn">Copiar email de Interac</button>
+          </div>
+          <div class="form-group">
+            <label class="payment-confirm">
+              <input type="checkbox" id="paymentConfirm" required>
+              <span id="labelPaymentConfirm">Entiendo que mi pedido queda pendiente hasta que el pago por Interac sea recibido y verificado.</span>
+            </label>
+          </div>
+          <div class="notice payment-note" id="paymentStepNote">Cuando envíes el pedido, recibirás un correo con el resumen y el estado pendiente de pago. El pedido queda completo cuando recibamos y verifiquemos el Interac.</div>
+        </div>
+      </div>
+
+      <div class="wizard-actions first-step" id="wizardActions">
+        <button class="back-btn" type="button" onclick="prevStep()" id="backBtn">Atrás</button>
+        <button class="submit-btn" type="button" onclick="nextStep()" id="nextBtn">Continuar</button>
+        <button class="submit-btn" type="button" onclick="submitOrder()" id="submitBtn">Enviar pedido pendiente de pago</button>
+      </div>
       <button class="wholesale-btn" onclick="openWholesale()" id="wholesaleBtn">Pedido al mayor / Eventos</button>
 
     </div>
@@ -677,14 +1232,16 @@
     <div class="success" id="successSection">
       <div class="success-icon">✓</div>
       <div class="success-title" id="successTitle">Pedido recibido</div>
-      <p class="success-text" id="successText">Gracias por tu pedido. Te enviamos un correo con todos los detalles.</p>
+      <p class="success-text" id="successText">Te enviamos un correo con el resumen. Tu pedido queda pendiente hasta que recibamos y verifiquemos el Interac.</p>
       <div class="payment-box">
         <div class="payment-box-title" id="paymentTitle">Instrucciones de pago</div>
         <p id="paymentInstructions">Para confirmar tu pedido, realiza el pago por <strong>Interac e-transfer</strong> a:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Una vez confirmado el pago, tu pedido queda reservado.</p>
       </div>
-      <p style="font-size:0.8rem; color:#BBB; font-weight:600;" id="successNote">Tu pedido se confirma una vez recibamos el pago.</p>
-      <br>
-      <button class="new-order-btn" onclick="resetForm()" id="newOrderBtn">Hacer otro pedido</button>
+      <p style="font-size:0.8rem; color:#BBB; font-weight:600;" id="successNote">Estado: pendiente de pago/verificación. Te contactaremos cuando el Interac esté recibido.</p>
+      <div class="success-actions">
+        <button class="copy-btn" onclick="copyPaymentEmail()" id="copyPaymentBtn">Copiar email de pago</button>
+        <button class="new-order-btn" onclick="resetForm()" id="newOrderBtn">Hacer otro pedido</button>
+      </div>
     </div>
 
   </div>
@@ -762,16 +1319,43 @@
 <script>
   let currentLang = 'es';
   let deliveryType = '';
+  let currentStep = 1;
+  const TOTAL_STEPS = 7;
   const EMAILJS_SERVICE_ID = 'service_e7esjlr';
   const CUSTOMER_TEMPLATE_ID = 'template_0uqvj9g';
   const BUSINESS_TEMPLATE_ID = 'template_cdrhe1h';
   const BUSINESS_EMAIL = 'tequechamosmtl@gmail.com';
+  const AUTOSAVE_KEY = 'tequeweb-order-draft-v1';
+  const SUMMARY_STEP = 6;
 
   const texts = {
     es: {
       heroBadge: 'Desde Maracaibo',
       heroTagline: 'Los mejores tequeños de Montreal — frescos, artesanales y listos para freír.',
-      sectionPersonal:'Tus datos', labelName:'Nombre completo', namePH:'Tu nombre completo',
+      stepLabel:'Paso', stepOf:'de', backBtn:'Atrás', nextBtn:'Continuar',
+      stepTitles:['Tu nombre','Tu pedido','Fecha','Entrega','Contacto','Confirmar','Pago'],
+      copyName:'Empecemos por lo más fácil. Así sabemos a nombre de quién va el pedido.',
+      copyMenu:'Elige cuántas docenas quieres. Puedes ajustar la cantidad antes de confirmar.',
+      copyDate:'Selecciona el día que te queda mejor entre las fechas disponibles.',
+      copyDelivery:'Dinos si prefieres delivery o pickup. Si es delivery, agrega tu dirección.',
+      copyContact:'Déjanos tu WhatsApp o teléfono y tu correo para confirmar el pedido.',
+      copyNotes:'Agrega cualquier detalle especial y revisa el resumen antes de enviar.',
+      copyPayment:'Antes de enviarlo: tu pedido llegará como pendiente de pago. Para completarlo, falta hacer el Interac.',
+      sectionContact:'Contacto',
+      sectionPayment:'Pago',
+      summaryTitle:'Resumen del pedido', summaryName:'Nombre', summaryOrder:'Pedido', summaryDate:'Fecha',
+      summaryTime:'Hora',
+      summaryDelivery:'Entrega', summaryAddress:'Dirección', summaryContact:'Contacto', summaryNotes:'Notas',
+      summaryNoNotes:'Sin notas adicionales', summaryPickup:'Pickup',
+      quickSummaryEmpty:'Tu pedido se irá armando aquí',
+      copyPaymentBtn:'Copiar email de pago', copiedPaymentBtn:'Email copiado',
+      copyPaymentStepBtn:'Copiar email de Interac',
+      paymentEmailLabel:'Email para Interac',
+      labelPaymentConfirm:'Entiendo que mi pedido queda pendiente hasta que el pago por Interac sea recibido y verificado.',
+      paymentStepNote:'Cuando envíes el pedido, recibirás un correo con el resumen y el estado pendiente de pago. El pedido queda completo cuando recibamos y verifiquemos el Interac.',
+      alertPaymentConfirm:'Confirma que entiendes que el pedido queda pendiente hasta verificar el pago.',
+      paymentStatusPending:'Pago Interac pendiente de recibir/verificar',
+      sectionPersonal:'Tu nombre', labelName:'Nombre completo', namePH:'Tu nombre completo',
       labelPhone:'Teléfono', labelEmail:'Correo electrónico',
       sectionMenu:'Tu pedido', menuQtyTitle:'Docenas',
       menuQtySingular:'docena', menuQtyPlural:'docenas',
@@ -789,14 +1373,15 @@
       labelAddress:'Tu dirección', addressPH:'Calle, ciudad, código postal',
       deliveryPriceNote:'El precio del delivery varía según la distancia. Te contactaremos para confirmar el costo final.',
       sectionDate:'Día de entrega', labelDate:'Cuándo prefieres recibir tu pedido',
+      labelTime:'Hora preferida', alertTime:'Por favor selecciona una hora entre 9:00 AM y 10:00 PM.',
       optDefault:'Selecciona una fecha',
-      noticeDays:'Elige entre los próximos viernes y sábados disponibles.',
+      noticeDays:'Elige el día y la hora que prefieres. Horario disponible: 9:00 AM a 10:00 PM.',
       sectionNotes:'Notas', labelNotes:'Nota adicional (opcional)', notesPH:'Alergias, instrucciones especiales...',
-      submitBtn:'Hacer pedido', wholesaleBtn:'Pedido al mayor / Eventos',
-      successTitle:'Pedido recibido', successText:'Gracias por tu pedido. Recibimos tus detalles y te contactaremos pronto para confirmar.',
+      submitBtn:'Enviar pedido pendiente de pago', wholesaleBtn:'Pedido al mayor / Eventos',
+      successTitle:'Pedido recibido', successText:'Te enviamos un correo con el resumen. Tu pedido queda pendiente hasta que recibamos y verifiquemos el Interac.',
       paymentTitle:'Instrucciones de pago',
-      paymentInstructions:'Para confirmar tu pedido, realiza el pago por <strong>Interac e-transfer</strong> a:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Una vez confirmado el pago, tu pedido queda reservado.',
-      successNote:'Tu pedido se confirma una vez recibamos el pago.',
+      paymentInstructions:'Para confirmar tu pedido, realiza el pago por <strong>Interac e-transfer</strong> a:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Estado actual: <strong>pendiente de pago/verificación</strong>.',
+      successNote:'Estado: pendiente de pago/verificación. Te contactaremos cuando el Interac esté recibido.',
       newOrderBtn:'Hacer otro pedido', footerBulk:'Eventos y pedidos al mayor — escríbenos por Instagram',
       wTitle:'Al Mayor / Eventos', wSubtitle:'Cuéntanos los detalles y te contactamos para coordinar todo.',
       wLabelName:'Nombre completo', wLabelPhone:'Teléfono / WhatsApp', wLabelEmail:'Correo electrónico',
@@ -821,7 +1406,30 @@
     fr: {
       heroBadge: 'De Maracaibo',
       heroTagline: 'Les meilleurs tequeños de Montreal — frais, artisanaux et prêts à frire.',
-      sectionPersonal:'Tes infos', labelName:'Nom complet', namePH:'Ton nom complet',
+      stepLabel:'Étape', stepOf:'de', backBtn:'Retour', nextBtn:'Continuer',
+      stepTitles:['Ton nom','Ta commande','Date','Livraison','Contact','Confirmer','Paiement'],
+      copyName:'Commençons par le plus simple. Comme ça, on sait à quel nom préparer la commande.',
+      copyMenu:'Choisis combien de douzaines tu veux. Tu peux ajuster la quantité avant de confirmer.',
+      copyDate:'Sélectionne la journée qui te convient parmi les dates disponibles.',
+      copyDelivery:'Dis-nous si tu préfères la livraison ou le ramassage. Pour la livraison, ajoute ton adresse.',
+      copyContact:'Laisse ton WhatsApp ou téléphone et ton courriel pour confirmer la commande.',
+      copyNotes:'Ajoute tout détail spécial et vérifie le résumé avant d’envoyer.',
+      copyPayment:'Avant de l’envoyer : ta commande arrivera comme en attente de paiement. Pour la compléter, il reste à faire le virement Interac.',
+      sectionContact:'Contact',
+      sectionPayment:'Paiement',
+      summaryTitle:'Résumé de la commande', summaryName:'Nom', summaryOrder:'Commande', summaryDate:'Date',
+      summaryTime:'Heure',
+      summaryDelivery:'Livraison', summaryAddress:'Adresse', summaryContact:'Contact', summaryNotes:'Notes',
+      summaryNoNotes:'Aucune note supplémentaire', summaryPickup:'Ramassage',
+      quickSummaryEmpty:'Ta commande va se construire ici',
+      copyPaymentBtn:'Copier le courriel de paiement', copiedPaymentBtn:'Courriel copié',
+      copyPaymentStepBtn:'Copier le courriel Interac',
+      paymentEmailLabel:'Courriel pour Interac',
+      labelPaymentConfirm:'Je comprends que ma commande reste en attente jusqu’à ce que le paiement Interac soit reçu et vérifié.',
+      paymentStepNote:'Quand tu enverras la commande, tu recevras un courriel avec le résumé et le statut en attente de paiement. La commande est complétée quand le virement Interac est reçu et vérifié.',
+      alertPaymentConfirm:'Veuillez confirmer que la commande reste en attente jusqu’à la vérification du paiement.',
+      paymentStatusPending:'Paiement Interac en attente de réception/vérification',
+      sectionPersonal:'Ton nom', labelName:'Nom complet', namePH:'Ton nom complet',
       labelPhone:'Téléphone', labelEmail:'Adresse courriel',
       sectionMenu:'Ta commande', menuQtyTitle:'Douzaines',
       menuQtySingular:'douzaine', menuQtyPlural:'douzaines',
@@ -839,14 +1447,15 @@
       labelAddress:'Ton adresse', addressPH:'Rue, ville, code postal',
       deliveryPriceNote:'Le prix de livraison varie selon la distance. Nous te contacterons pour confirmer le coût final.',
       sectionDate:'Jour de livraison', labelDate:'Quand veux-tu recevoir ta commande',
+      labelTime:'Heure préférée', alertTime:'Veuillez sélectionner une heure entre 9 h et 22 h.',
       optDefault:'Choisis une date',
-      noticeDays:'Choisis parmi les prochains vendredis et samedis disponibles.',
+      noticeDays:'Choisis le jour et l’heure souhaités. Horaire disponible : 9 h à 22 h.',
       sectionNotes:'Notes', labelNotes:'Note supplémentaire (optionnelle)', notesPH:'Allergies, instructions spéciales...',
-      submitBtn:'Commander', wholesaleBtn:'Commande en gros / Événements',
-      successTitle:'Commande reçue', successText:'Merci pour ta commande. Nous avons reçu tes détails et nous te contacterons bientôt pour confirmer.',
+      submitBtn:'Envoyer la commande en attente de paiement', wholesaleBtn:'Commande en gros / Événements',
+      successTitle:'Commande reçue', successText:'Nous t’avons envoyé un courriel avec le résumé. Ta commande reste en attente jusqu’à la réception et la vérification du virement Interac.',
       paymentTitle:'Instructions de paiement',
-      paymentInstructions:'Pour confirmer ta commande, effectue le paiement par <strong>Interac virement</strong> à:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Une fois le paiement confirmé, ta commande est réservée.',
-      successNote:'Ta commande est confirmée une fois le paiement reçu.',
+      paymentInstructions:'Pour confirmer ta commande, effectue le paiement par <strong>virement Interac</strong> à:<br><br><strong>tequechamosmtl@gmail.com</strong><br><br>Statut actuel : <strong>en attente de paiement/vérification</strong>.',
+      successNote:'Statut : en attente de paiement/vérification. Nous te contacterons quand le virement Interac sera reçu.',
       newOrderBtn:'Nouvelle commande', footerBulk:'Événements et commandes en gros — écris-nous sur Instagram',
       wTitle:'En Gros / Événements', wSubtitle:'Dis-nous les détails et on te contacte pour coordonner.',
       wLabelName:'Nom complet', wLabelPhone:'Téléphone / WhatsApp', wLabelEmail:'Adresse courriel',
@@ -892,7 +1501,9 @@
     const select = document.getElementById('deliveryDate');
     const previousValue = select.value;
     const t = texts[currentLang];
+    const dateGrid = document.getElementById('dateGrid');
     select.innerHTML = '';
+    dateGrid.replaceChildren();
 
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
@@ -919,18 +1530,248 @@
       option.value = formatDateValue(date);
       option.textContent = label;
       select.appendChild(option);
+
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'date-card';
+      card.dataset.value = option.value;
+      const locale = currentLang === 'fr' ? 'fr-CA' : 'es-CA';
+      const day = document.createElement('span');
+      day.className = 'date-day';
+      day.textContent = date.toLocaleDateString(locale, { weekday: 'short' }).replace(/[.,]/g, '');
+      const main = document.createElement('span');
+      main.className = 'date-main';
+      main.textContent = date.getDate();
+      const month = document.createElement('span');
+      month.className = 'date-month';
+      month.textContent = date.toLocaleDateString(locale, { month: 'short' }).replace(/[.,]/g, '');
+      card.append(day, main, month);
+      card.addEventListener('click', () => selectDeliveryDate(option.value));
+      dateGrid.appendChild(card);
     });
 
     if ([...select.options].some(option => option.value === previousValue)) {
       select.value = previousValue;
     }
+    syncDateCards();
   }
+
+  function selectDeliveryDate(value) {
+    document.getElementById('deliveryDate').value = value;
+    clearFieldError('deliveryDate');
+    syncDateCards();
+    saveDraft();
+    updateQuickSummary();
+    if (currentStep >= SUMMARY_STEP) renderOrderSummary();
+  }
+
+  function syncDateCards() {
+    const value = document.getElementById('deliveryDate').value;
+    document.querySelectorAll('.date-card').forEach(card => {
+      card.classList.toggle('selected', card.dataset.value === value);
+    });
+  }
+
+  function getFieldStep(id) {
+    const map = {
+      name: 1,
+      customQty: 2,
+      deliveryDate: 3,
+      deliveryTime: 3,
+      address: 4,
+      phone: 5,
+      email: 5,
+      notes: 6,
+      paymentConfirm: 7
+    };
+    return map[id] || currentStep;
+  }
+
+  function updateWizard() {
+    const t = texts[currentLang];
+    document.querySelectorAll('.order-step').forEach(step => {
+      step.classList.toggle('active', Number(step.dataset.step) === currentStep);
+    });
+
+    document.getElementById('stepCounter').textContent = t.stepLabel + ' ' + currentStep + ' ' + t.stepOf + ' ' + TOTAL_STEPS;
+    const firstName = document.getElementById('name').value.trim().split(/\s+/)[0];
+    const title = t.stepTitles[currentStep - 1];
+    document.getElementById('progressTitle').textContent = currentStep > 1 && firstName ? title + ' · ' + firstName : title;
+    document.getElementById('progressFill').style.width = ((currentStep / TOTAL_STEPS) * 100) + '%';
+
+    const dots = document.getElementById('progressDots');
+    dots.innerHTML = '';
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot' + (i <= currentStep ? ' active' : '');
+      dot.textContent = i;
+      dots.appendChild(dot);
+    }
+
+    document.getElementById('backBtn').style.display = currentStep === 1 ? 'none' : 'block';
+    document.getElementById('nextBtn').style.display = currentStep === TOTAL_STEPS ? 'none' : 'block';
+    document.getElementById('submitBtn').style.display = currentStep === TOTAL_STEPS ? 'block' : 'none';
+    document.getElementById('wizardActions').classList.toggle('first-step', currentStep === 1);
+
+    if (currentStep >= SUMMARY_STEP) {
+      renderOrderSummary();
+    }
+    updateQuickSummary();
+  }
+
+  function goToStep(step) {
+    currentStep = Math.min(TOTAL_STEPS, Math.max(1, step));
+    updateWizard();
+    document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function nextStep() {
+    if (!validateStep(currentStep)) return;
+    goToStep(currentStep + 1);
+  }
+
+  function prevStep() {
+    goToStep(currentStep - 1);
+  }
+
+  function validateStep(step) {
+    const t = texts[currentLang];
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const customQty = parseInt(document.getElementById('customQty').value, 10);
+    const deliveryDate = document.getElementById('deliveryDate').value;
+    const deliveryTime = document.getElementById('deliveryTime').value;
+    const deliverySelected = document.querySelector('.delivery-card.selected input');
+    const address = document.getElementById('address').value.trim();
+    const paymentConfirm = document.getElementById('paymentConfirm').checked;
+
+    ['name','phone','email','customQty','address','deliveryDate','deliveryTime','paymentConfirm'].forEach(clearFieldError);
+    clearDeliveryError();
+
+    if (step === 1) {
+      if (!name) return showFieldError('name', t.alertName);
+      if (!isValidName(name)) return showFieldError('name', t.alertInvalidName);
+    }
+    if (step === 2) {
+      document.getElementById('menuCard').classList.add('selected', 'expanded');
+      if (!customQty || customQty < 1) return showFieldError('customQty', t.alertCustomQty);
+      if (customQty > 8) { showWholesalePrompt(); return false; }
+    }
+    if (step === 3 && !deliveryDate) {
+      return showFieldError('deliveryDate', t.alertDate);
+    }
+    if (step === 3 && !isValidDeliveryTime(deliveryTime)) {
+      return showFieldError('deliveryTime', t.alertTime);
+    }
+    if (step === 4) {
+      if (!deliverySelected) {
+        currentStep = 4;
+        updateWizard();
+        return showDeliveryError(t.alertDelivery);
+      }
+      if (deliveryType === 'delivery' && !address) return showFieldError('address', t.alertAddress);
+    }
+    if (step === 5) {
+      if (!phone) return showFieldError('phone', t.alertPhone);
+      if (!isValidPhone(phone)) return showFieldError('phone', t.alertInvalidPhone);
+      if (!email || !isValidEmail(email)) return showFieldError('email', t.alertEmail);
+    }
+    if (step === 7 && !paymentConfirm) {
+      return showFieldError('paymentConfirm', t.alertPaymentConfirm);
+    }
+    return true;
+  }
+
+  function getOrderSnapshot() {
+    const t = texts[currentLang];
+    const qty = parseInt(document.getElementById('customQty').value, 10) || 1;
+    const unit = qty === 1 ? t.menuQtySingular : t.menuQtyPlural;
+    const deliveryDateSelect = document.getElementById('deliveryDate');
+    const deliveryDateLabel = deliveryDateSelect.value ? deliveryDateSelect.options[deliveryDateSelect.selectedIndex].textContent : '—';
+    const deliveryTime = document.getElementById('deliveryTime').value || '—';
+    const deliverySelected = document.querySelector('.delivery-card.selected input');
+    const deliveryLabel = deliverySelected ? deliverySelected.value : '—';
+    const address = deliveryType === 'delivery' ? document.getElementById('address').value.trim() : t.summaryPickup;
+
+    return {
+      name: document.getElementById('name').value.trim() || '—',
+      order: qty + ' ' + unit + ' — ' + getMenuPrice(qty),
+      date: deliveryDateLabel,
+      time: deliveryTime,
+      delivery: deliveryLabel,
+      address: address || '—',
+      contact: (document.getElementById('phone').value.trim() || '—') + ' / ' + (document.getElementById('email').value.trim() || '—'),
+      notes: document.getElementById('notes').value.trim() || t.summaryNoNotes
+    };
+  }
+
+  function buildMenuValue() {
+    const t = texts[currentLang];
+    const qty = parseInt(document.getElementById('customQty').value, 10) || 1;
+    return qty + ' ' + (qty === 1 ? t.menuQtySingular : t.menuQtyPlural) + ' — ' + getMenuPrice(qty);
+  }
+
+  function updateQuickSummary() {
+    const t = texts[currentLang];
+    const quick = document.getElementById('quickSummary');
+    const text = document.getElementById('quickSummaryText');
+    const data = getOrderSnapshot();
+    const pieces = [data.order];
+    if (data.delivery && data.delivery !== '—') pieces.push(data.delivery);
+    if (data.date && data.date !== '—') pieces.push(data.date.split(',')[0]);
+    if (data.time && data.time !== '—') pieces.push(data.time);
+    text.textContent = pieces.length ? pieces.join(' · ') : t.quickSummaryEmpty;
+    quick.classList.toggle('visible', currentStep > 1);
+  }
+
+  function renderOrderSummary() {
+    const t = texts[currentLang];
+    const data = getOrderSnapshot();
+    const rows = [
+      [t.summaryName, data.name],
+      [t.summaryOrder, data.order],
+      [t.summaryDate, data.date],
+      [t.summaryTime, data.time],
+      [t.summaryDelivery, data.delivery],
+      [t.summaryAddress, data.address],
+      [t.summaryContact, data.contact],
+      [t.summaryNotes, data.notes]
+    ];
+
+    const summary = document.getElementById('orderSummary');
+    summary.replaceChildren();
+    const title = document.createElement('div');
+    title.className = 'mini-popup-title';
+    title.textContent = t.summaryTitle;
+    summary.appendChild(title);
+
+    rows.forEach(row => {
+      const item = document.createElement('div');
+      item.className = 'summary-row';
+      const label = document.createElement('div');
+      label.className = 'summary-label';
+      label.textContent = row[0];
+      const value = document.createElement('div');
+      value.textContent = row[1];
+      item.append(label, value);
+      summary.appendChild(item);
+    });
+  }
+
   function setLang(lang) {
     currentLang = lang;
     document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active',(lang==='es'&&i===0)||(lang==='fr'&&i===1)));
     const t = texts[lang];
     document.getElementById('heroBadge').textContent = t.heroBadge;
     document.getElementById('heroTagline').textContent = t.heroTagline;
+    document.getElementById('copyName').textContent = t.copyName;
+    document.getElementById('copyMenu').textContent = t.copyMenu;
+    document.getElementById('copyDate').textContent = t.copyDate;
+    document.getElementById('copyDelivery').textContent = t.copyDelivery;
+    document.getElementById('copyContact').textContent = t.copyContact;
+    document.getElementById('copyNotes').textContent = t.copyNotes;
+    document.getElementById('copyPayment').textContent = t.copyPayment;
     document.getElementById('sectionPersonal').textContent = t.sectionPersonal;
     document.getElementById('labelName').textContent = t.labelName;
     document.getElementById('name').placeholder = t.namePH;
@@ -955,11 +1796,20 @@
     document.getElementById('deliveryPriceNote').textContent = t.deliveryPriceNote;
     document.getElementById('sectionDate').textContent = t.sectionDate;
     document.getElementById('labelDate').textContent = t.labelDate;
+    document.getElementById('labelTime').textContent = t.labelTime;
     populateDeliveryDates();
     document.getElementById('noticeDays').textContent = t.noticeDays;
+    document.getElementById('sectionContact').textContent = t.sectionContact;
     document.getElementById('sectionNotes').textContent = t.sectionNotes;
+    document.getElementById('sectionPayment').textContent = t.sectionPayment;
+    document.getElementById('paymentEmailLabel').innerHTML = t.paymentEmailLabel + ' <strong>' + BUSINESS_EMAIL + '</strong>';
+    document.getElementById('copyPaymentStepBtn').textContent = t.copyPaymentStepBtn;
+    document.getElementById('labelPaymentConfirm').textContent = t.labelPaymentConfirm;
+    document.getElementById('paymentStepNote').textContent = t.paymentStepNote;
     document.getElementById('labelNotes').textContent = t.labelNotes;
     document.getElementById('notes').placeholder = t.notesPH;
+    document.getElementById('backBtn').textContent = t.backBtn;
+    document.getElementById('nextBtn').textContent = t.nextBtn;
     document.getElementById('submitBtn').textContent = t.submitBtn;
     document.getElementById('wholesaleBtn').textContent = t.wholesaleBtn;
     document.getElementById('successTitle').textContent = t.successTitle;
@@ -967,6 +1817,7 @@
     document.getElementById('paymentTitle').textContent = t.paymentTitle;
     document.getElementById('paymentInstructions').innerHTML = t.paymentInstructions;
     document.getElementById('successNote').textContent = t.successNote;
+    document.getElementById('copyPaymentBtn').textContent = t.copyPaymentBtn;
     document.getElementById('newOrderBtn').textContent = t.newOrderBtn;
     document.getElementById('footerBulk').textContent = t.footerBulk;
     document.getElementById('wTitle').textContent = t.wTitle;
@@ -985,6 +1836,8 @@
     document.getElementById('wSuccessTitle').textContent = t.wSuccessTitle;
     document.getElementById('wSuccessText').textContent = t.wSuccessText;
     document.getElementById('wCloseBtn').textContent = t.wCloseBtn;
+    updateQuickSummary();
+    updateWizard();
   }
 
   function getMenuPrice(qty) {
@@ -1004,6 +1857,7 @@
     const sauces = qty * 2;
     document.getElementById('menuPrice').textContent = getMenuPrice(qty);
     document.getElementById('menuQtyNote').textContent = qty + ' ' + unit + ' — ' + tequenos + ' ' + t.menuTequenos + ' + ' + sauces + ' ' + t.menuSauces;
+    if (currentStep >= SUMMARY_STEP) renderOrderSummary();
   }
 
   function selectMenu() {
@@ -1024,6 +1878,8 @@
     }
     input.value = Math.max(1, nextQty);
     updateMenuSummary();
+    saveDraft();
+    updateQuickSummary();
   }
 
   function updateQtyFromInput() {
@@ -1036,6 +1892,8 @@
       return;
     }
     updateMenuSummary();
+    saveDraft();
+    updateQuickSummary();
   }
 
   function showWholesalePrompt() {
@@ -1055,22 +1913,73 @@
   function selectDelivery(el, type) {
     deliveryType = type;
     document.querySelectorAll('.delivery-card').forEach(c => c.classList.remove('selected'));
+    clearDeliveryError();
     el.classList.add('selected');
     el.querySelector('input').checked = true;
     document.getElementById('addressGroup').classList.toggle('visible', type === 'delivery');
     clearFieldError('address');
+    clearDeliveryError();
+    saveDraft();
+    updateQuickSummary();
+    if (currentStep >= SUMMARY_STEP) renderOrderSummary();
 
   }
 
   function clearFieldError(id) {
-    document.getElementById(id).classList.remove('field-invalid');
+    const field = document.getElementById(id);
+    if (!field) return;
+    field.classList.remove('field-invalid');
+    const error = document.getElementById(id + 'Error');
+    if (error) {
+      error.textContent = '';
+      error.classList.remove('visible');
+    }
+  }
+
+  function ensureFieldError(id) {
+    let error = document.getElementById(id + 'Error');
+    if (error) return error;
+    const field = document.getElementById(id);
+    error = document.createElement('div');
+    error.className = 'field-error-message';
+    error.id = id + 'Error';
+    const group = field.closest('.form-group') || field.parentElement;
+    group.appendChild(error);
+    return error;
+  }
+
+  function clearDeliveryError() {
+    const error = document.getElementById('deliveryError');
+    error.textContent = '';
+    error.classList.remove('visible');
+  }
+
+  function showDeliveryError(message) {
+    const error = document.getElementById('deliveryError');
+    error.textContent = message;
+    error.classList.add('visible');
+    document.querySelector('.delivery-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
   }
 
   function showFieldError(id, message) {
     const field = document.getElementById(id);
+    const targetStep = getFieldStep(id);
+    if (currentStep !== targetStep) {
+      currentStep = targetStep;
+      updateWizard();
+    }
     field.classList.add('field-invalid');
-    field.focus();
-    alert(message);
+    const error = ensureFieldError(id);
+    error.textContent = message;
+    error.classList.add('visible');
+    setTimeout(() => {
+      if (id === 'deliveryDate') {
+        document.getElementById('dateGrid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        field.focus();
+      }
+    }, 30);
     return false;
   }
 
@@ -1088,6 +1997,91 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
   }
 
+  function isValidDeliveryTime(value) {
+    return !!value && value >= '09:00' && value <= '22:00';
+  }
+
+  function getDraftData() {
+    return {
+      lang: currentLang,
+      name: document.getElementById('name').value,
+      qty: document.getElementById('customQty').value,
+      date: document.getElementById('deliveryDate').value,
+      time: document.getElementById('deliveryTime').value,
+      deliveryType,
+      address: document.getElementById('address').value,
+      phone: document.getElementById('phone').value,
+      email: document.getElementById('email').value,
+      notes: document.getElementById('notes').value,
+      paymentConfirm: document.getElementById('paymentConfirm').checked
+    };
+  }
+
+  function saveDraft() {
+    try {
+      localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(getDraftData()));
+    } catch (error) {
+      console.warn('No se pudo guardar el borrador:', error);
+    }
+  }
+
+  function loadDraft() {
+    try {
+      const raw = localStorage.getItem(AUTOSAVE_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      ['name','address','phone','email','notes'].forEach(id => {
+        if (draft[id]) document.getElementById(id).value = draft[id];
+      });
+      if (draft.qty) document.getElementById('customQty').value = draft.qty;
+      if (draft.date) {
+        document.getElementById('deliveryDate').value = draft.date;
+        syncDateCards();
+      }
+      if (draft.time) document.getElementById('deliveryTime').value = draft.time;
+      if (draft.paymentConfirm) document.getElementById('paymentConfirm').checked = true;
+      if (draft.deliveryType) {
+        const card = [...document.querySelectorAll('.delivery-card')].find(el => el.querySelector('input') && el.querySelector('input').value.toLowerCase() === draft.deliveryType);
+        if (card) selectDelivery(card, draft.deliveryType);
+      }
+      updateMenuSummary();
+      updateQuickSummary();
+    } catch (error) {
+      console.warn('No se pudo cargar el borrador:', error);
+    }
+  }
+
+  function setupDraftListeners() {
+    ['name','customQty','deliveryDate','deliveryTime','address','phone','email','notes','paymentConfirm'].forEach(id => {
+      const field = document.getElementById(id);
+      field.addEventListener('input', () => {
+        clearFieldError(id);
+        saveDraft();
+        updateQuickSummary();
+        if (currentStep >= SUMMARY_STEP) renderOrderSummary();
+      });
+      field.addEventListener('change', () => {
+        clearFieldError(id);
+        saveDraft();
+        updateQuickSummary();
+        if (currentStep >= SUMMARY_STEP) renderOrderSummary();
+      });
+    });
+  }
+
+  async function copyPaymentEmail(buttonId = 'copyPaymentBtn') {
+    const t = texts[currentLang];
+    const btn = document.getElementById(buttonId);
+    const defaultText = buttonId === 'copyPaymentStepBtn' ? t.copyPaymentStepBtn : t.copyPaymentBtn;
+    try {
+      await navigator.clipboard.writeText(BUSINESS_EMAIL);
+      btn.textContent = t.copiedPaymentBtn;
+      setTimeout(() => { btn.textContent = defaultText; }, 1800);
+    } catch (error) {
+      window.prompt(defaultText, BUSINESS_EMAIL);
+    }
+  }
+
   function ensureEmailReady(t) {
     if (!window.emailjs || typeof emailjs.send !== 'function') {
       throw new Error(t.alertEmailUnavailable);
@@ -1097,10 +2091,14 @@
   function showOrderSuccess() {
     document.getElementById('formSection').style.display = 'none';
     document.getElementById('successSection').classList.add('visible');
+    localStorage.removeItem(AUTOSAVE_KEY);
   }
 
   async function submitOrder() {
     const t = texts[currentLang];
+    for (let step = 1; step <= TOTAL_STEPS; step++) {
+      if (!validateStep(step)) return;
+    }
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -1109,10 +2107,22 @@
     const deliveryDateSelect = document.getElementById('deliveryDate');
     const deliveryDate = deliveryDateSelect.value;
     const deliveryDateLabel = deliveryDateSelect.options[deliveryDateSelect.selectedIndex]?.textContent || deliveryDate;
+    const deliveryTime = document.getElementById('deliveryTime').value;
     const address = document.getElementById('address').value.trim();
     const notes = document.getElementById('notes').value.trim();
+    const paymentConfirm = document.getElementById('paymentConfirm').checked;
+    const paymentStatus = t.paymentStatusPending;
+    const notesForEmail = currentLang === 'fr' ? [
+      'Statut de la commande : en attente de paiement/vérification',
+      'Courriel Interac : ' + BUSINESS_EMAIL,
+      'Note du client : ' + (notes || '—')
+    ].join('\n') : [
+      'Estado del pedido: pendiente de pago/verificación',
+      'Email Interac: ' + BUSINESS_EMAIL,
+      'Nota del cliente: ' + (notes || '—')
+    ].join('\n');
 
-    ['name','phone','email','customQty','address','deliveryDate'].forEach(clearFieldError);
+    ['name','phone','email','customQty','address','deliveryDate','deliveryTime','paymentConfirm'].forEach(clearFieldError);
 
     if (!name) { showFieldError('name', t.alertName); return; }
     if (!isValidName(name)) { showFieldError('name', t.alertInvalidName); return; }
@@ -1126,12 +2136,14 @@
     if (!deliverySelected) { alert(t.alertDelivery); return; }
     if (deliveryType === 'delivery' && !address) { showFieldError('address', t.alertAddress); return; }
     if (!deliveryDate) { showFieldError('deliveryDate', t.alertDate); return; }
+    if (!isValidDeliveryTime(deliveryTime)) { showFieldError('deliveryTime', t.alertTime); return; }
+    if (!paymentConfirm) { showFieldError('paymentConfirm', t.alertPaymentConfirm); return; }
 
     const btn = document.getElementById('submitBtn');
     btn.textContent = t.sending; btn.disabled = true;
 
     updateMenuSummary();
-    const menuVal = customQty + ' ' + (customQty === 1 ? t.menuQtySingular : t.menuQtyPlural) + ' — ' + getMenuPrice(customQty);
+    const menuVal = buildMenuValue();
 
     const params = {
       name,
@@ -1141,9 +2153,14 @@
       menu: menuVal,
       delivery: deliverySelected.value,
       address: deliveryType==='delivery' ? address : 'Pickup',
-      date: deliveryDateLabel,
+      date: deliveryDateLabel + ' - ' + deliveryTime,
       date_value: deliveryDate,
-      notes: notes||'—'
+      time: deliveryTime,
+      payment_email: BUSINESS_EMAIL,
+      payment_status: paymentStatus,
+      order_status: paymentStatus,
+      payment_instructions: t.paymentInstructions.replace(/<[^>]*>/g, ''),
+      notes: notesForEmail
     };
 
     try {
@@ -1172,10 +2189,12 @@
   function resetForm() {
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('successSection').classList.remove('visible');
-    ['name','phone','email','notes','address'].forEach(id => document.getElementById(id).value = '');
-    ['name','phone','email','customQty','address','deliveryDate'].forEach(clearFieldError);
+    ['name','phone','email','notes','address','deliveryTime'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('paymentConfirm').checked = false;
+    ['name','phone','email','customQty','address','deliveryDate','deliveryTime','paymentConfirm'].forEach(clearFieldError);
     document.getElementById('customQty').value = '1';
     document.getElementById('deliveryDate').value = '';
+    syncDateCards();
     document.querySelectorAll('.delivery-card').forEach(c => c.classList.remove('selected'));
     document.getElementById('menuCard').classList.remove('selected');
     document.getElementById('menuCard').classList.remove('expanded');
@@ -1183,6 +2202,10 @@
     closeWholesalePrompt();
     updateMenuSummary();
     deliveryType = '';
+    currentStep = 1;
+    localStorage.removeItem(AUTOSAVE_KEY);
+    updateWizard();
+    updateQuickSummary();
   }
 
   function openWholesale() {
@@ -1202,7 +2225,14 @@
     btn.disabled = false; btn.textContent = texts[currentLang].wSubmitBtn;
   }
 
+  document.getElementById('menuCard').classList.add('selected', 'expanded');
+  try {
+    const saved = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) || '{}');
+    if (saved.lang) currentLang = saved.lang;
+  } catch (error) {}
   setLang(currentLang);
+  setupDraftListeners();
+  loadDraft();
 
   async function submitWholesale() {
     const t = texts[currentLang];
