@@ -229,11 +229,73 @@
     background: transparent;
     padding: 18px 22px 72px;
   }
+  .content.is-hidden { display: none; }
 
   #formSection {
     width: 100%;
     max-width: 480px;
     margin: 0 auto;
+  }
+
+  .entry-section {
+    padding: 18px 22px 14px;
+  }
+  .entry-section.is-hidden { display: none; }
+  .is-hidden { display: none !important; }
+  .entry-panel {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, rgba(255,250,243,0.96), rgba(255,244,226,0.92));
+    border: 1px solid rgba(255,255,255,0.72);
+    border-radius: 22px;
+    padding: 24px 22px;
+    box-shadow: 0 16px 36px rgba(26,8,0,0.2), inset 0 1px 0 rgba(255,255,255,0.8);
+    animation: contentRise 0.32s ease both;
+  }
+  .entry-title {
+    font-family: 'Talina', 'Fraunces', serif;
+    font-size: 1.45rem;
+    font-weight: 900;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .entry-text {
+    color: var(--mid);
+    font-size: 0.92rem;
+    font-weight: 650;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .entry-actions {
+    display: grid;
+    gap: 11px;
+  }
+  .whatsapp-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.9);
+    color: #0F7A3B;
+    font-family: 'Karla', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 900;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1.5px solid rgba(15,122,59,0.55);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 10px 24px rgba(26,8,0,0.08);
+  }
+  .whatsapp-btn:hover {
+    background: #128C4A;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(15,122,59,0.24);
   }
 
   /* Section */
@@ -1057,8 +1119,20 @@
     </div>
   </div>
 
+  <!-- Entry -->
+  <div class="entry-section" id="entrySection">
+    <div class="entry-panel">
+      <div class="entry-title" id="entryTitle">¿Cómo quieres pedir?</div>
+      <p class="entry-text" id="entryText">Puedes hacer el pedido completo aquí o escribirnos directo por WhatsApp Business.</p>
+      <div class="entry-actions">
+        <button class="submit-btn" type="button" onclick="showOrderForm()" id="entryOrderBtn">Hacer pedido por la página</button>
+        <a class="whatsapp-btn" id="entryWhatsAppBtn" href="#" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
   <!-- Content -->
-  <div class="content">
+  <div class="content is-hidden" id="mainContent">
 
     <div id="formSection">
 
@@ -1076,6 +1150,7 @@
         <span class="quick-summary-dot"></span>
         <span id="quickSummaryText">1 docena · $20</span>
       </div>
+      <div class="notice" id="orderWindowNotice">Los pedidos se reciben de lunes a miércoles.</div>
 
       <!-- 1. Nombre -->
       <div class="section order-step active" data-step="1">
@@ -1132,7 +1207,7 @@
           <label id="labelTime">Hora preferida</label>
           <input type="time" id="deliveryTime" min="09:00" max="22:00" required>
         </div>
-        <div class="notice" id="noticeDays">Elige entre los próximos viernes y sábados disponibles.</div>
+        <div class="notice" id="noticeDays">Elige sábado o domingo entre las fechas disponibles.</div>
       </div>
 
       <!-- 4. Entrega -->
@@ -1161,6 +1236,8 @@
             <input type="text" id="address" placeholder="Calle, ciudad, código postal" autocomplete="street-address">
           </div>
           <div class="notice" id="deliveryPriceNote">El precio del delivery varía según la distancia. Te contactaremos para confirmar el costo final.</div>
+          <div class="notice" id="deliveryScheduleNote">Los horarios de delivery se coordinarán contigo después de recibir el pedido. Próximamente se podrán reservar por calendario.</div>
+          <button type="button" class="wholesale-btn is-hidden" id="deliveryCalendarBtn" onclick="openDeliveryCalendar()">Reservar horario de delivery</button>
         </div>
       </div>
 
@@ -1327,11 +1404,23 @@
   const BUSINESS_EMAIL = 'tequechamosmtl@gmail.com';
   const AUTOSAVE_KEY = 'tequeweb-order-draft-v1';
   const SUMMARY_STEP = 6;
+  const WHATSAPP_NUMBER = '15143774266';
+  const WHATSAPP_MESSAGE = {
+    es: 'Hola TequeChamos, quiero hacer un pedido.',
+    fr: 'Bonjour TequeChamos, je veux passer une commande.'
+  };
+  const GOOGLE_CALENDAR_BOOKING_URL = '';
 
   const texts = {
     es: {
       heroBadge: 'Desde Maracaibo',
       heroTagline: 'Los mejores tequeños de Montreal — frescos, artesanales y listos para freír.',
+      entryTitle:'¿Cómo quieres pedir?',
+      entryText:'Puedes hacer el pedido completo aquí o escribirnos directo por WhatsApp Business.',
+      entryOrderBtn:'Hacer pedido por la página',
+      entryWhatsAppBtn:'Pedir por WhatsApp',
+      orderWindowOpenNotice:'Los pedidos se reciben de lunes a miércoles. Estás dentro del periodo normal de pedidos.',
+      orderWindowClosedNotice:'El periodo normal de pedidos es de lunes a miércoles. Como ya pasó esta semana, tu pedido quedará agendado para la próxima semana disponible.',
       stepLabel:'Paso', stepOf:'de', backBtn:'Atrás', nextBtn:'Continuar',
       stepTitles:['Tu nombre','Tu pedido','Fecha','Entrega','Contacto','Confirmar','Pago'],
       copyName:'Empecemos por lo más fácil. Así sabemos a nombre de quién va el pedido.',
@@ -1372,10 +1461,13 @@
       pickupName:'Pickup', pickupDesc:'Recógelo en punto acordado',
       labelAddress:'Tu dirección', addressPH:'Calle, ciudad, código postal',
       deliveryPriceNote:'El precio del delivery varía según la distancia. Te contactaremos para confirmar el costo final.',
+      deliveryScheduleNote:'Los deliveries se coordinan para sábado y domingo. Por ahora te contactaremos para confirmar hora exacta y costo según distancia.',
+      deliveryCalendarBtn:'Reservar horario de delivery',
+      deliveryCalendarUnavailable:'Todavía falta conectar el calendario de delivery. Envíanos el pedido y te contactaremos para cuadrar la hora.',
       sectionDate:'Día de entrega', labelDate:'Cuándo prefieres recibir tu pedido',
       labelTime:'Hora preferida', alertTime:'Por favor selecciona una hora entre 9:00 AM y 10:00 PM.',
       optDefault:'Selecciona una fecha',
-      noticeDays:'Elige el día y la hora que prefieres. Horario disponible: 9:00 AM a 10:00 PM.',
+      noticeDays:'Elige sábado o domingo entre las fechas disponibles. Horario disponible: 9:00 AM a 10:00 PM.',
       sectionNotes:'Notas', labelNotes:'Nota adicional (opcional)', notesPH:'Alergias, instrucciones especiales...',
       submitBtn:'Enviar pedido pendiente de pago', wholesaleBtn:'Pedido al mayor / Eventos',
       successTitle:'Pedido recibido', successText:'Te enviamos un correo con el resumen. Tu pedido queda pendiente hasta que recibamos y verifiquemos el Interac.',
@@ -1406,6 +1498,12 @@
     fr: {
       heroBadge: 'De Maracaibo',
       heroTagline: 'Les meilleurs tequeños de Montreal — frais, artisanaux et prêts à frire.',
+      entryTitle:'Comment veux-tu commander?',
+      entryText:'Tu peux compléter la commande ici ou nous écrire directement sur WhatsApp Business.',
+      entryOrderBtn:'Commander sur la page',
+      entryWhatsAppBtn:'Commander par WhatsApp',
+      orderWindowOpenNotice:'Les commandes sont reçues du lundi au mercredi. Tu es dans la période normale de commande.',
+      orderWindowClosedNotice:'La période normale de commande est du lundi au mercredi. Comme elle est passée cette semaine, ta commande sera planifiée pour la prochaine semaine disponible.',
       stepLabel:'Étape', stepOf:'de', backBtn:'Retour', nextBtn:'Continuer',
       stepTitles:['Ton nom','Ta commande','Date','Livraison','Contact','Confirmer','Paiement'],
       copyName:'Commençons par le plus simple. Comme ça, on sait à quel nom préparer la commande.',
@@ -1446,10 +1544,13 @@
       pickupName:'Ramassage', pickupDesc:'Ramassez au point convenu',
       labelAddress:'Ton adresse', addressPH:'Rue, ville, code postal',
       deliveryPriceNote:'Le prix de livraison varie selon la distance. Nous te contacterons pour confirmer le coût final.',
+      deliveryScheduleNote:'Les livraisons se coordonnent le samedi et le dimanche. Pour l’instant, on te contactera pour confirmer l’heure exacte et le coût selon la distance.',
+      deliveryCalendarBtn:'Réserver une heure de livraison',
+      deliveryCalendarUnavailable:'Le calendrier de livraison n’est pas encore connecté. Envoie la commande et on te contactera pour coordonner l’heure.',
       sectionDate:'Jour de livraison', labelDate:'Quand veux-tu recevoir ta commande',
       labelTime:'Heure préférée', alertTime:'Veuillez sélectionner une heure entre 9 h et 22 h.',
       optDefault:'Choisis une date',
-      noticeDays:'Choisis le jour et l’heure souhaités. Horaire disponible : 9 h à 22 h.',
+      noticeDays:'Choisis un samedi ou un dimanche parmi les dates disponibles. Horaire disponible : 9 h à 22 h.',
       sectionNotes:'Notes', labelNotes:'Note supplémentaire (optionnelle)', notesPH:'Allergies, instructions spéciales...',
       submitBtn:'Envoyer la commande en attente de paiement', wholesaleBtn:'Commande en gros / Événements',
       successTitle:'Commande reçue', successText:'Nous t’avons envoyé un courriel avec le résumé. Ta commande reste en attente jusqu’à la réception et la vérification du virement Interac.',
@@ -1478,6 +1579,45 @@
       alertWDetails:'Veuillez décrire les détails de votre commande.',
     }
   };
+
+  function getWhatsAppUrl() {
+    return 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(WHATSAPP_MESSAGE[currentLang]);
+  }
+
+  function getMontrealDayIndex(date = new Date()) {
+    const dayName = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Toronto',
+      weekday: 'short'
+    }).format(date);
+    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(dayName);
+  }
+
+  function isOrderWindowOpen(date = new Date()) {
+    const day = getMontrealDayIndex(date);
+    return day >= 1 && day <= 3;
+  }
+
+  function updateOrderWindowNotice() {
+    const notice = document.getElementById('orderWindowNotice');
+    if (!notice) return;
+    notice.textContent = isOrderWindowOpen() ? texts[currentLang].orderWindowOpenNotice : texts[currentLang].orderWindowClosedNotice;
+  }
+
+  function showOrderForm() {
+    document.getElementById('entrySection').classList.add('is-hidden');
+    document.getElementById('mainContent').classList.remove('is-hidden');
+    updateOrderWindowNotice();
+    document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function openDeliveryCalendar() {
+    const t = texts[currentLang];
+    if (!GOOGLE_CALENDAR_BOOKING_URL) {
+      alert(t.deliveryCalendarUnavailable);
+      return;
+    }
+    window.open(GOOGLE_CALENDAR_BOOKING_URL, '_blank', 'noopener');
+  }
 
   function formatDeliveryDate(date) {
     const locale = currentLang === 'fr' ? 'fr-CA' : 'es-CA';
@@ -1513,12 +1653,12 @@
 
     const dates = [];
     const cursor = new Date();
-    cursor.setDate(cursor.getDate() + 1);
+    cursor.setDate(cursor.getDate() + (isOrderWindowOpen() ? 1 : 7));
     cursor.setHours(12, 0, 0, 0);
 
     for (let i = 0; i < 45 && dates.length < 8; i++) {
       const day = cursor.getDay();
-      if (day === 5 || day === 6) {
+      if (day === 6 || day === 0) {
         dates.push(new Date(cursor));
       }
       cursor.setDate(cursor.getDate() + 1);
@@ -1765,6 +1905,13 @@
     const t = texts[lang];
     document.getElementById('heroBadge').textContent = t.heroBadge;
     document.getElementById('heroTagline').textContent = t.heroTagline;
+    document.getElementById('entryTitle').textContent = t.entryTitle;
+    document.getElementById('entryText').textContent = t.entryText;
+    document.getElementById('entryOrderBtn').textContent = t.entryOrderBtn;
+    document.getElementById('entryWhatsAppBtn').textContent = t.entryWhatsAppBtn;
+    document.getElementById('entryWhatsAppBtn').href = getWhatsAppUrl();
+    document.getElementById('entryWhatsAppBtn').setAttribute('aria-label', t.entryWhatsAppBtn);
+    updateOrderWindowNotice();
     document.getElementById('copyName').textContent = t.copyName;
     document.getElementById('copyMenu').textContent = t.copyMenu;
     document.getElementById('copyDate').textContent = t.copyDate;
@@ -1794,6 +1941,9 @@
     document.getElementById('labelAddress').textContent = t.labelAddress;
     document.getElementById('address').placeholder = t.addressPH;
     document.getElementById('deliveryPriceNote').textContent = t.deliveryPriceNote;
+    document.getElementById('deliveryScheduleNote').textContent = t.deliveryScheduleNote;
+    document.getElementById('deliveryCalendarBtn').textContent = t.deliveryCalendarBtn;
+    document.getElementById('deliveryCalendarBtn').classList.toggle('is-hidden', !GOOGLE_CALENDAR_BOOKING_URL);
     document.getElementById('sectionDate').textContent = t.sectionDate;
     document.getElementById('labelDate').textContent = t.labelDate;
     document.getElementById('labelTime').textContent = t.labelTime;
@@ -2112,13 +2262,16 @@
     const notes = document.getElementById('notes').value.trim();
     const paymentConfirm = document.getElementById('paymentConfirm').checked;
     const paymentStatus = t.paymentStatusPending;
+    const orderWindowStatus = isOrderWindowOpen() ? t.orderWindowOpenNotice : t.orderWindowClosedNotice;
     const notesForEmail = currentLang === 'fr' ? [
       'Statut de la commande : en attente de paiement/vérification',
       'Courriel Interac : ' + BUSINESS_EMAIL,
+      'Fenêtre de commande : ' + orderWindowStatus,
       'Note du client : ' + (notes || '—')
     ].join('\n') : [
       'Estado del pedido: pendiente de pago/verificación',
       'Email Interac: ' + BUSINESS_EMAIL,
+      'Periodo de pedido: ' + orderWindowStatus,
       'Nota del cliente: ' + (notes || '—')
     ].join('\n');
 
@@ -2159,6 +2312,7 @@
       payment_email: BUSINESS_EMAIL,
       payment_status: paymentStatus,
       order_status: paymentStatus,
+      order_window_status: orderWindowStatus,
       payment_instructions: t.paymentInstructions.replace(/<[^>]*>/g, ''),
       notes: notesForEmail
     };
@@ -2225,7 +2379,6 @@
     btn.disabled = false; btn.textContent = texts[currentLang].wSubmitBtn;
   }
 
-  document.getElementById('menuCard').classList.add('selected', 'expanded');
   try {
     const saved = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) || '{}');
     if (saved.lang) currentLang = saved.lang;
