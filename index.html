@@ -378,7 +378,7 @@
   /* Menu cards */
   .menu-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
   .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .date-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+  .date-grid { display: none; }
   .date-card {
     border: 1.5px solid rgba(255,179,71,0.45);
     border-radius: 15px;
@@ -568,6 +568,27 @@
 
   #addressGroup { display:none; margin-top:12px; }
   #addressGroup.visible { display:block; }
+  #pickupTimeGroup { display:none; margin-top:14px; }
+  #pickupTimeGroup.visible { display:block; }
+
+  .order-window-card {
+    border-color: rgba(255,77,0,0.34);
+    background: linear-gradient(180deg, #FFF7EA, #FFF0D2);
+  }
+  .order-window-card .mini-popup-title {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+  .order-window-text {
+    color: var(--dark);
+    font-family: 'Karla', sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    line-height: 1.42;
+    margin-bottom: 18px;
+  }
 
   /* Step-by-step order flow */
   .order-progress {
@@ -1036,12 +1057,15 @@
 
   @media(max-width:480px){
     body{animation-duration:32s;}
+    .page{min-height:100svh; display:flex; flex-direction:column;}
     body::before{display:none;}
     .blob{display:none;}
     .menu-grid,.delivery-grid{grid-template-columns:1fr;}
-    .date-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
-    .content{padding:14px 16px 86px;}
-    .hero{padding:24px 20px 22px;}
+    .date-grid{display:none;}
+    .entry-section{padding:12px 16px 18px; flex:1; display:flex; align-items:center;}
+    .entry-section.is-hidden{display:none;}
+    .content{padding:12px 16px 96px; flex:1;}
+    .hero{padding:18px 20px 12px;}
     .logo{font-size:clamp(1.22rem, 6.6vw, 1.62rem);}
     .pixel-logo{width:50px;}
     .hero-tagline{font-size:0.86rem;}
@@ -1049,7 +1073,7 @@
       align-items:flex-start;
       flex-direction:column;
       gap:12px;
-      margin-bottom:14px;
+      margin-bottom:10px;
     }
     .lang-toggle{align-self:flex-start;}
     .modal-body{padding:24px 20px 20px;}
@@ -1210,14 +1234,10 @@
         <p class="step-copy" id="copyDate">Selecciona el día que te queda mejor entre las fechas disponibles.</p>
         <div class="form-group">
           <label id="labelDate">Cuándo prefieres recibir tu pedido</label>
-          <select id="deliveryDate" required hidden>
+          <select id="deliveryDate" required onchange="selectDeliveryDate(this.value)">
             <option value="" id="optDefault">Selecciona una fecha</option>
           </select>
           <div class="date-grid" id="dateGrid"></div>
-        </div>
-        <div class="form-group">
-          <label id="labelTime">Hora preferida</label>
-          <input type="time" id="deliveryTime" min="09:00" max="22:00" required>
         </div>
         <div class="notice" id="noticeDays">Elige sábado o domingo entre las fechas disponibles.</div>
       </div>
@@ -1242,6 +1262,25 @@
           </label>
         </div>
         <div class="field-error-message" id="deliveryError"></div>
+        <div class="form-group" id="pickupTimeGroup">
+          <label id="labelTime">Hora de pickup</label>
+          <select id="deliveryTime">
+            <option value="" id="optTimeDefault">Selecciona una hora</option>
+            <option value="09:00">9:00 AM</option>
+            <option value="10:00">10:00 AM</option>
+            <option value="11:00">11:00 AM</option>
+            <option value="12:00">12:00 PM</option>
+            <option value="13:00">1:00 PM</option>
+            <option value="14:00">2:00 PM</option>
+            <option value="15:00">3:00 PM</option>
+            <option value="16:00">4:00 PM</option>
+            <option value="17:00">5:00 PM</option>
+            <option value="18:00">6:00 PM</option>
+            <option value="19:00">7:00 PM</option>
+            <option value="20:00">8:00 PM</option>
+            <option value="21:00">9:00 PM</option>
+          </select>
+        </div>
         <div id="addressGroup">
           <div class="form-group" style="margin-top:14px;">
             <label id="labelAddress">Tu dirección</label>
@@ -1345,9 +1384,9 @@
 
 <!-- Order window prompt -->
 <div class="mini-popup" id="orderWindowPrompt">
-  <div class="mini-popup-card">
+  <div class="mini-popup-card order-window-card">
     <div class="mini-popup-title" id="orderWindowPromptTitle">Antes de pedir</div>
-    <div class="mini-popup-text" id="orderWindowPromptText">Pedidos de lunes a miércoles. Si el periodo ya cerró, tu pedido queda para la próxima semana disponible.</div>
+    <div class="mini-popup-text order-window-text" id="orderWindowPromptText">Esta semana de pedidos ya acabó. El pedido que hagas ahora será agendado para la próxima semana disponible.</div>
     <div class="mini-popup-actions">
       <button type="button" class="mini-popup-primary" id="orderWindowPromptBtn" onclick="confirmOrderWindowPrompt()">OK, continuar</button>
     </div>
@@ -1444,14 +1483,14 @@
       entryWhatsAppBtn:'Pedir por WhatsApp',
       orderWindowPromptTitle:'Antes de pedir',
       orderWindowPromptBtn:'OK, continuar',
-      orderWindowOpenNotice:'Pedidos de lunes a miércoles. Tu entrega/pickup será para el fin de semana correspondiente.',
-      orderWindowClosedNotice:'Pedidos de esta semana cerrados. Tu entrega/pickup queda para la próxima semana disponible.',
+      orderWindowOpenNotice:'Esta semana todavía estamos recibiendo pedidos. Tu pickup o delivery será agendado para el fin de semana correspondiente.',
+      orderWindowClosedNotice:'Esta semana de pedidos ya acabó. El pedido que hagas ahora será agendado para la próxima semana disponible.',
       stepLabel:'Paso', stepOf:'de', backBtn:'Atrás', nextBtn:'Continuar',
       stepTitles:['Tu nombre','Tu pedido','Fecha','Entrega','Contacto','Confirmar','Pago'],
       copyName:'Empecemos por lo más fácil. Así sabemos a nombre de quién va el pedido.',
       copyMenu:'Elige cuántas docenas quieres. Puedes ajustar la cantidad antes de confirmar.',
-      copyDate:'Selecciona el día que te queda mejor entre las fechas disponibles.',
-      copyDelivery:'Dinos si prefieres delivery o pickup. Si es delivery, agrega tu dirección.',
+      copyDate:'Selecciona el día disponible que te queda mejor.',
+      copyDelivery:'Elige delivery o pickup. Para pickup seleccionas hora; para delivery coordinamos la hora contigo.',
       copyContact:'Déjanos tu WhatsApp o teléfono y tu correo para confirmar el pedido.',
       copyNotes:'Agrega cualquier detalle especial y revisa el resumen antes de enviar.',
       copyPayment:'Antes de enviarlo: tu pedido llegará como pendiente de pago. Para completarlo, falta hacer el Interac.',
@@ -1490,7 +1529,9 @@
       deliveryCalendarBtn:'Reservar horario de delivery',
       deliveryCalendarUnavailable:'Todavía falta conectar el calendario de delivery. Envíanos el pedido y te contactaremos para cuadrar la hora.',
       sectionDate:'Día de entrega', labelDate:'Cuándo prefieres recibir tu pedido',
-      labelTime:'Hora preferida', alertTime:'Por favor selecciona una hora entre 9:00 AM y 10:00 PM.',
+      labelTime:'Hora de pickup', optTimeDefault:'Selecciona una hora',
+      deliveryTimeTbd:'Por coordinar',
+      alertTime:'Por favor selecciona una hora de pickup.',
       optDefault:'Selecciona una fecha',
       noticeDays:'Elige sábado o domingo entre las fechas disponibles. Horario disponible: 9:00 AM a 10:00 PM.',
       sectionNotes:'Notas', labelNotes:'Nota adicional (opcional)', notesPH:'Alergias, instrucciones especiales...',
@@ -1529,14 +1570,14 @@
       entryWhatsAppBtn:'Commander par WhatsApp',
       orderWindowPromptTitle:'Avant de commander',
       orderWindowPromptBtn:'OK, continuer',
-      orderWindowOpenNotice:'Commandes du lundi au mercredi. Ta livraison/ton pickup sera pour la fin de semaine correspondante.',
-      orderWindowClosedNotice:'Commandes de cette semaine fermées. Ta livraison/ton pickup sera pour la prochaine semaine disponible.',
+      orderWindowOpenNotice:'Cette semaine, nous recevons encore des commandes. Ta livraison ou ton pickup sera planifié pour la fin de semaine correspondante.',
+      orderWindowClosedNotice:'La période de commandes de cette semaine est terminée. La commande faite maintenant sera planifiée pour la prochaine semaine disponible.',
       stepLabel:'Étape', stepOf:'de', backBtn:'Retour', nextBtn:'Continuer',
       stepTitles:['Ton nom','Ta commande','Date','Livraison','Contact','Confirmer','Paiement'],
       copyName:'Commençons par le plus simple. Comme ça, on sait à quel nom préparer la commande.',
       copyMenu:'Choisis combien de douzaines tu veux. Tu peux ajuster la quantité avant de confirmer.',
-      copyDate:'Sélectionne la journée qui te convient parmi les dates disponibles.',
-      copyDelivery:'Dis-nous si tu préfères la livraison ou le ramassage. Pour la livraison, ajoute ton adresse.',
+      copyDate:'Sélectionne la journée disponible qui te convient le mieux.',
+      copyDelivery:'Choisis livraison ou pickup. Pour pickup, tu choisis l’heure; pour livraison, on coordonne l’heure avec toi.',
       copyContact:'Laisse ton WhatsApp ou téléphone et ton courriel pour confirmer la commande.',
       copyNotes:'Ajoute tout détail spécial et vérifie le résumé avant d’envoyer.',
       copyPayment:'Avant de l’envoyer : ta commande arrivera comme en attente de paiement. Pour la compléter, il reste à faire le virement Interac.',
@@ -1575,7 +1616,9 @@
       deliveryCalendarBtn:'Réserver une heure de livraison',
       deliveryCalendarUnavailable:'Le calendrier de livraison n’est pas encore connecté. Envoie la commande et on te contactera pour coordonner l’heure.',
       sectionDate:'Jour de livraison', labelDate:'Quand veux-tu recevoir ta commande',
-      labelTime:'Heure préférée', alertTime:'Veuillez sélectionner une heure entre 9 h et 22 h.',
+      labelTime:'Heure de pickup', optTimeDefault:'Choisis une heure',
+      deliveryTimeTbd:'À coordonner',
+      alertTime:'Veuillez sélectionner une heure de pickup.',
       optDefault:'Choisis une date',
       noticeDays:'Choisis un samedi ou un dimanche parmi les dates disponibles. Horaire disponible : 9 h à 22 h.',
       sectionNotes:'Notes', labelNotes:'Note supplémentaire (optionnelle)', notesPH:'Allergies, instructions spéciales...',
@@ -1751,7 +1794,7 @@
       name: 1,
       customQty: 2,
       deliveryDate: 3,
-      deliveryTime: 3,
+      deliveryTime: 4,
       address: 4,
       phone: 5,
       email: 5,
@@ -1815,7 +1858,7 @@
     const email = document.getElementById('email').value.trim();
     const customQty = parseInt(document.getElementById('customQty').value, 10);
     const deliveryDate = document.getElementById('deliveryDate').value;
-    const deliveryTime = document.getElementById('deliveryTime').value;
+    const rawDeliveryTime = document.getElementById('deliveryTime').value;
     const deliverySelected = document.querySelector('.delivery-card.selected input');
     const address = document.getElementById('address').value.trim();
     const paymentConfirm = document.getElementById('paymentConfirm').checked;
@@ -1835,9 +1878,6 @@
     if (step === 3 && !deliveryDate) {
       return showFieldError('deliveryDate', t.alertDate);
     }
-    if (step === 3 && !isValidDeliveryTime(deliveryTime)) {
-      return showFieldError('deliveryTime', t.alertTime);
-    }
     if (step === 4) {
       if (!deliverySelected) {
         currentStep = 4;
@@ -1845,6 +1885,7 @@
         return showDeliveryError(t.alertDelivery);
       }
       if (deliveryType === 'delivery' && !address) return showFieldError('address', t.alertAddress);
+      if (deliveryType === 'pickup' && !isValidDeliveryTime(rawDeliveryTime)) return showFieldError('deliveryTime', t.alertTime);
     }
     if (step === 5) {
       if (!phone) return showFieldError('phone', t.alertPhone);
@@ -1863,9 +1904,9 @@
     const unit = qty === 1 ? t.menuQtySingular : t.menuQtyPlural;
     const deliveryDateSelect = document.getElementById('deliveryDate');
     const deliveryDateLabel = deliveryDateSelect.value ? deliveryDateSelect.options[deliveryDateSelect.selectedIndex].textContent : '—';
-    const deliveryTime = document.getElementById('deliveryTime').value || '—';
     const deliverySelected = document.querySelector('.delivery-card.selected input');
     const deliveryLabel = deliverySelected ? deliverySelected.value : '—';
+    const deliveryTime = deliveryType === 'delivery' ? t.deliveryTimeTbd : (document.getElementById('deliveryTime').value || '—');
     const address = deliveryType === 'delivery' ? document.getElementById('address').value.trim() : t.summaryPickup;
 
     return {
@@ -1983,6 +2024,7 @@
     document.getElementById('sectionDate').textContent = t.sectionDate;
     document.getElementById('labelDate').textContent = t.labelDate;
     document.getElementById('labelTime').textContent = t.labelTime;
+    document.getElementById('optTimeDefault').textContent = t.optTimeDefault;
     populateDeliveryDates();
     document.getElementById('noticeDays').textContent = t.noticeDays;
     document.getElementById('sectionContact').textContent = t.sectionContact;
@@ -2103,7 +2145,10 @@
     el.classList.add('selected');
     el.querySelector('input').checked = true;
     document.getElementById('addressGroup').classList.toggle('visible', type === 'delivery');
+    document.getElementById('pickupTimeGroup').classList.toggle('visible', type === 'pickup');
+    if (type === 'delivery') document.getElementById('deliveryTime').value = '';
     clearFieldError('address');
+    clearFieldError('deliveryTime');
     clearDeliveryError();
     saveDraft();
     updateQuickSummary();
@@ -2161,7 +2206,7 @@
     error.classList.add('visible');
     setTimeout(() => {
       if (id === 'deliveryDate') {
-        document.getElementById('dateGrid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        field.focus();
       } else {
         field.focus();
       }
@@ -2177,6 +2222,22 @@
   function isValidPhone(value) {
     const digits = value.replace(/\D/g, '');
     return digits.length >= 10 && digits.length <= 15;
+  }
+
+  function getCustomerWhatsAppUrl(phone) {
+    const digits = phone.replace(/\D/g, '');
+    const normalized = digits.length === 10 ? '1' + digits : digits;
+    return normalized ? 'https://wa.me/' + normalized : '';
+  }
+
+  function getCustomerWhatsAppOrderUrl(phone, name) {
+    const baseUrl = getCustomerWhatsAppUrl(phone);
+    if (!baseUrl) return '';
+    const firstName = name.trim().split(/\s+/)[0] || '';
+    const message = currentLang === 'fr'
+      ? 'Bonjour ' + firstName + ', nous avons reçu ta commande TequeChamos. On te contacte pour confirmer les détails.'
+      : 'Hola ' + firstName + ', recibimos tu pedido de TequeChamos. Te escribimos para confirmar los detalles.';
+    return baseUrl + '?text=' + encodeURIComponent(message);
   }
 
   function isValidEmail(value) {
@@ -2293,7 +2354,7 @@
     const deliveryDateSelect = document.getElementById('deliveryDate');
     const deliveryDate = deliveryDateSelect.value;
     const deliveryDateLabel = deliveryDateSelect.options[deliveryDateSelect.selectedIndex]?.textContent || deliveryDate;
-    const deliveryTime = document.getElementById('deliveryTime').value;
+    const rawDeliveryTime = document.getElementById('deliveryTime').value;
     const address = document.getElementById('address').value.trim();
     const notes = document.getElementById('notes').value.trim();
     const paymentConfirm = document.getElementById('paymentConfirm').checked;
@@ -2325,7 +2386,7 @@
     if (!deliverySelected) { alert(t.alertDelivery); return; }
     if (deliveryType === 'delivery' && !address) { showFieldError('address', t.alertAddress); return; }
     if (!deliveryDate) { showFieldError('deliveryDate', t.alertDate); return; }
-    if (!isValidDeliveryTime(deliveryTime)) { showFieldError('deliveryTime', t.alertTime); return; }
+    if (deliveryType === 'pickup' && !isValidDeliveryTime(rawDeliveryTime)) { showFieldError('deliveryTime', t.alertTime); return; }
     if (!paymentConfirm) { showFieldError('paymentConfirm', t.alertPaymentConfirm); return; }
 
     const btn = document.getElementById('submitBtn');
@@ -2333,10 +2394,16 @@
 
     updateMenuSummary();
     const menuVal = buildMenuValue();
+    const deliveryTime = deliveryType === 'delivery' ? t.deliveryTimeTbd : rawDeliveryTime;
+    const customerWhatsAppUrl = getCustomerWhatsAppUrl(phone);
+    const customerWhatsAppOrderUrl = getCustomerWhatsAppOrderUrl(phone, name);
 
     const params = {
       name,
       phone,
+      customer_whatsapp_url: customerWhatsAppUrl,
+      whatsapp_link: customerWhatsAppUrl,
+      customer_whatsapp_order_url: customerWhatsAppOrderUrl,
       email,
       business_email: BUSINESS_EMAIL,
       menu: menuVal,
@@ -2389,6 +2456,7 @@
     document.getElementById('menuCard').classList.remove('selected');
     document.getElementById('menuCard').classList.remove('expanded');
     document.getElementById('addressGroup').classList.remove('visible');
+    document.getElementById('pickupTimeGroup').classList.remove('visible');
     closeWholesalePrompt();
     updateMenuSummary();
     deliveryType = '';
