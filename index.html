@@ -1040,7 +1040,7 @@
     .blob{display:none;}
     .menu-grid,.delivery-grid{grid-template-columns:1fr;}
     .date-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
-    .content{padding:14px 16px 58px;}
+    .content{padding:14px 16px 86px;}
     .hero{padding:24px 20px 22px;}
     .logo{font-size:clamp(1.22rem, 6.6vw, 1.62rem);}
     .pixel-logo{width:50px;}
@@ -1065,7 +1065,19 @@
     .step-copy{font-size:0.88rem; margin-bottom:18px;}
     input, select, textarea{font-size:0.96rem;}
     .footer{padding:22px 18px;}
-    .lang-toggle,.quick-summary,.order-step,.success{backdrop-filter:none;}
+    .quick-summary.visible{
+      position:fixed;
+      left:14px;
+      right:14px;
+      bottom:max(12px, env(safe-area-inset-bottom));
+      z-index:220;
+      max-width:none;
+      margin:0;
+      background:rgba(26,8,0,0.88);
+      border-color:rgba(255,210,0,0.32);
+      box-shadow:0 14px 30px rgba(26,8,0,0.28);
+    }
+    .lang-toggle,.order-step,.success{backdrop-filter:none;}
     .rising-bubble{animation-duration:18s;}
     .rising-bubble.b3,.rising-bubble.b5,.rising-bubble.b6,.rising-bubble.b8{display:none;}
     .rising-bubble.b1{width:54px;height:54px;left:4%;}
@@ -1150,7 +1162,7 @@
         <span class="quick-summary-dot"></span>
         <span id="quickSummaryText">1 docena · $20</span>
       </div>
-      <div class="notice" id="orderWindowNotice">Los pedidos se reciben de lunes a miércoles.</div>
+      <div class="notice is-hidden" id="orderWindowNotice">Los pedidos se reciben de lunes a miércoles.</div>
 
       <!-- 1. Nombre -->
       <div class="section order-step active" data-step="1">
@@ -1331,6 +1343,17 @@
 
 </div>
 
+<!-- Order window prompt -->
+<div class="mini-popup" id="orderWindowPrompt">
+  <div class="mini-popup-card">
+    <div class="mini-popup-title" id="orderWindowPromptTitle">Antes de pedir</div>
+    <div class="mini-popup-text" id="orderWindowPromptText">Pedidos de lunes a miércoles. Si el periodo ya cerró, tu pedido queda para la próxima semana disponible.</div>
+    <div class="mini-popup-actions">
+      <button type="button" class="mini-popup-primary" id="orderWindowPromptBtn" onclick="confirmOrderWindowPrompt()">OK, continuar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Mini wholesale prompt -->
 <div class="mini-popup" id="wholesalePrompt">
   <div class="mini-popup-card">
@@ -1419,8 +1442,10 @@
       entryText:'Puedes hacer el pedido completo aquí o escribirnos directo por WhatsApp Business.',
       entryOrderBtn:'Hacer pedido por la página',
       entryWhatsAppBtn:'Pedir por WhatsApp',
-      orderWindowOpenNotice:'Los pedidos se reciben de lunes a miércoles. Estás dentro del periodo normal de pedidos.',
-      orderWindowClosedNotice:'El periodo normal de pedidos es de lunes a miércoles. Como ya pasó esta semana, tu pedido quedará agendado para la próxima semana disponible.',
+      orderWindowPromptTitle:'Antes de pedir',
+      orderWindowPromptBtn:'OK, continuar',
+      orderWindowOpenNotice:'Pedidos de lunes a miércoles. Tu entrega/pickup será para el fin de semana correspondiente.',
+      orderWindowClosedNotice:'Pedidos de esta semana cerrados. Tu entrega/pickup queda para la próxima semana disponible.',
       stepLabel:'Paso', stepOf:'de', backBtn:'Atrás', nextBtn:'Continuar',
       stepTitles:['Tu nombre','Tu pedido','Fecha','Entrega','Contacto','Confirmar','Pago'],
       copyName:'Empecemos por lo más fácil. Así sabemos a nombre de quién va el pedido.',
@@ -1502,8 +1527,10 @@
       entryText:'Tu peux compléter la commande ici ou nous écrire directement sur WhatsApp Business.',
       entryOrderBtn:'Commander sur la page',
       entryWhatsAppBtn:'Commander par WhatsApp',
-      orderWindowOpenNotice:'Les commandes sont reçues du lundi au mercredi. Tu es dans la période normale de commande.',
-      orderWindowClosedNotice:'La période normale de commande est du lundi au mercredi. Comme elle est passée cette semaine, ta commande sera planifiée pour la prochaine semaine disponible.',
+      orderWindowPromptTitle:'Avant de commander',
+      orderWindowPromptBtn:'OK, continuer',
+      orderWindowOpenNotice:'Commandes du lundi au mercredi. Ta livraison/ton pickup sera pour la fin de semaine correspondante.',
+      orderWindowClosedNotice:'Commandes de cette semaine fermées. Ta livraison/ton pickup sera pour la prochaine semaine disponible.',
       stepLabel:'Étape', stepOf:'de', backBtn:'Retour', nextBtn:'Continuer',
       stepTitles:['Ton nom','Ta commande','Date','Livraison','Contact','Confirmer','Paiement'],
       copyName:'Commençons par le plus simple. Comme ça, on sait à quel nom préparer la commande.',
@@ -1601,12 +1628,19 @@
     const notice = document.getElementById('orderWindowNotice');
     if (!notice) return;
     notice.textContent = isOrderWindowOpen() ? texts[currentLang].orderWindowOpenNotice : texts[currentLang].orderWindowClosedNotice;
+    const promptText = document.getElementById('orderWindowPromptText');
+    if (promptText) promptText.textContent = notice.textContent;
   }
 
   function showOrderForm() {
+    updateOrderWindowNotice();
+    document.getElementById('orderWindowPrompt').classList.add('visible');
+  }
+
+  function confirmOrderWindowPrompt() {
+    document.getElementById('orderWindowPrompt').classList.remove('visible');
     document.getElementById('entrySection').classList.add('is-hidden');
     document.getElementById('mainContent').classList.remove('is-hidden');
-    updateOrderWindowNotice();
     document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -1911,6 +1945,8 @@
     document.getElementById('entryWhatsAppBtn').textContent = t.entryWhatsAppBtn;
     document.getElementById('entryWhatsAppBtn').href = getWhatsAppUrl();
     document.getElementById('entryWhatsAppBtn').setAttribute('aria-label', t.entryWhatsAppBtn);
+    document.getElementById('orderWindowPromptTitle').textContent = t.orderWindowPromptTitle;
+    document.getElementById('orderWindowPromptBtn').textContent = t.orderWindowPromptBtn;
     updateOrderWindowNotice();
     document.getElementById('copyName').textContent = t.copyName;
     document.getElementById('copyMenu').textContent = t.copyMenu;
