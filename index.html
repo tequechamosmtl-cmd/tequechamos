@@ -260,6 +260,43 @@
     color: var(--orange);
     margin-bottom: 8px;
   }
+  .entry-status {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 15px 16px;
+    background: rgba(255,255,255,0.82);
+    border: 1.5px solid rgba(255,179,71,0.62);
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(26,8,0,0.08);
+  }
+  .entry-status-badge {
+    width: fit-content;
+    padding: 6px 11px;
+    border-radius: 999px;
+    color: white;
+    background: var(--orange);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+  }
+  .entry-status-badge.closed {
+    background: #6C3D20;
+  }
+  .entry-status-title {
+    color: var(--dark);
+    font-family: 'Karla', sans-serif;
+    font-size: 1.03rem;
+    font-weight: 900;
+    line-height: 1.28;
+  }
+  .entry-status-copy {
+    color: var(--mid);
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
   .entry-text {
     color: var(--mid);
     font-size: 0.92rem;
@@ -1158,8 +1195,13 @@
   <!-- Entry -->
   <div class="entry-section" id="entrySection">
     <div class="entry-panel">
-      <div class="entry-title" id="entryTitle">¿Cómo quieres pedir?</div>
-      <p class="entry-text" id="entryText">Puedes hacer el pedido completo aquí o escribirnos directo por WhatsApp Business.</p>
+      <div class="entry-title" id="entryTitle">Trabajamos por pedidos</div>
+      <div class="entry-status" id="entryStatus">
+        <div class="entry-status-badge" id="entryStatusBadge">Agenda abierta</div>
+        <div class="entry-status-title" id="entryStatusTitle">Agenda tu pedido ahora</div>
+        <div class="entry-status-copy" id="entryStatusCopy">Recibimos pedidos de lunes a miércoles para preparar el fin de semana correspondiente.</div>
+      </div>
+      <p class="entry-text" id="entryText">Puedes hacer tu pedido aquí o escribirnos directo por WhatsApp Business.</p>
       <div class="entry-actions">
         <button class="submit-btn" type="button" onclick="showOrderForm()" id="entryOrderBtn">Hacer pedido por la página</button>
         <a class="whatsapp-btn" id="entryWhatsAppBtn" href="#" target="_blank" rel="noopener">Pedir por WhatsApp</a>
@@ -1477,10 +1519,16 @@
     es: {
       heroBadge: 'Desde Maracaibo',
       heroTagline: 'Los mejores tequeños de Montreal — frescos, artesanales y listos para freír.',
-      entryTitle:'¿Cómo quieres pedir?',
-      entryText:'Puedes hacer el pedido completo aquí o escribirnos directo por WhatsApp Business.',
+      entryTitle:'Trabajamos por pedidos',
+      entryText:'Puedes hacer tu pedido aquí o escribirnos directo por WhatsApp Business.',
       entryOrderBtn:'Hacer pedido por la página',
       entryWhatsAppBtn:'Pedir por WhatsApp',
+      agendaOpenBadge:'Agenda abierta',
+      agendaClosedBadge:'Agenda cerrada',
+      agendaOpenTitle:'Agenda tu pedido ahora',
+      agendaClosedTitle:'Agenda tu pedido para la próxima semana',
+      agendaOpenCopy:'Recibimos pedidos de lunes a miércoles para preparar pickup o delivery del fin de semana correspondiente.',
+      agendaClosedCopy:'Esta semana de pedidos ya cerró. Puedes dejar tu pedido agendado para el próximo fin de semana disponible.',
       orderWindowPromptTitle:'Antes de pedir',
       orderWindowPromptBtn:'OK, continuar',
       orderWindowOpenNotice:'Esta semana todavía estamos recibiendo pedidos. Tu pickup o delivery será agendado para el fin de semana correspondiente.',
@@ -1564,10 +1612,16 @@
     fr: {
       heroBadge: 'De Maracaibo',
       heroTagline: 'Les meilleurs tequeños de Montreal — frais, artisanaux et prêts à frire.',
-      entryTitle:'Comment veux-tu commander?',
-      entryText:'Tu peux compléter la commande ici ou nous écrire directement sur WhatsApp Business.',
+      entryTitle:'Nous travaillons sur commande',
+      entryText:'Tu peux commander ici ou nous écrire directement sur WhatsApp Business.',
       entryOrderBtn:'Commander sur la page',
       entryWhatsAppBtn:'Commander par WhatsApp',
+      agendaOpenBadge:'Agenda ouvert',
+      agendaClosedBadge:'Agenda fermé',
+      agendaOpenTitle:'Réserve ta commande maintenant',
+      agendaClosedTitle:'Planifie ta commande pour la prochaine semaine',
+      agendaOpenCopy:'Nous recevons les commandes du lundi au mercredi pour préparer le pickup ou la livraison de la fin de semaine correspondante.',
+      agendaClosedCopy:'La période de commandes de cette semaine est terminée. Tu peux laisser ta commande planifiée pour la prochaine fin de semaine disponible.',
       orderWindowPromptTitle:'Avant de commander',
       orderWindowPromptBtn:'OK, continuer',
       orderWindowOpenNotice:'Cette semaine, nous recevons encore des commandes. Ta livraison ou ton pickup sera planifié pour la fin de semaine correspondante.',
@@ -1669,10 +1723,21 @@
 
   function updateOrderWindowNotice() {
     const notice = document.getElementById('orderWindowNotice');
+    const open = isOrderWindowOpen();
+    const t = texts[currentLang];
     if (!notice) return;
-    notice.textContent = isOrderWindowOpen() ? texts[currentLang].orderWindowOpenNotice : texts[currentLang].orderWindowClosedNotice;
+    notice.textContent = open ? t.orderWindowOpenNotice : t.orderWindowClosedNotice;
     const promptText = document.getElementById('orderWindowPromptText');
     if (promptText) promptText.textContent = notice.textContent;
+    const badge = document.getElementById('entryStatusBadge');
+    const title = document.getElementById('entryStatusTitle');
+    const copy = document.getElementById('entryStatusCopy');
+    if (badge && title && copy) {
+      badge.textContent = open ? t.agendaOpenBadge : t.agendaClosedBadge;
+      badge.classList.toggle('closed', !open);
+      title.textContent = open ? t.agendaOpenTitle : t.agendaClosedTitle;
+      copy.textContent = open ? t.agendaOpenCopy : t.agendaClosedCopy;
+    }
   }
 
   function showOrderForm() {
